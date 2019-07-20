@@ -1,24 +1,16 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
+import { Router } from "@reach/router";
 
-import Signout from "./Signout";
+import Home from "./Home";
+import CreateEvent from "./CreateEvent";
 
-export default function AuthenticatedApp() {
-  const [name, setName] = useState("");
-
-  useEffect(() => {
-    async function getUser() {
-      const { data } = await axios.get("http://localhost:3001/me");
-      setName(data.user.name);
-    }
-
-    getUser();
-  }, []);
-
+function AuthenticatedApp() {
   return (
-    <div>
-      <p>Hello {name}</p>
-      <Signout />
-    </div>
+    <Router>
+      <Home path="/" />
+      <CreateEvent path="/create" />
+    </Router>
   );
 }
+
+export default AuthenticatedApp;

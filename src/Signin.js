@@ -22,7 +22,7 @@ function Signin({ signin }) {
     >
       <label htmlFor="email">Email</label>
       <input
-        type="text"
+        type="email"
         name="email"
         value={formData.email}
         onChange={handleFormChange}
