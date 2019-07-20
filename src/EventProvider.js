@@ -28,7 +28,9 @@ function EventProvider({ children }) {
         formData
       );
 
-      setEvents(events => [...events, data.data]);
+      const newEvent = data.data;
+      setEvents(events => [...events, newEvent]);
+      return newEvent;
     } catch (e) {
       console.error(e);
     }

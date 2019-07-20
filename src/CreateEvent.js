@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { navigate } from "@reach/router";
+
 import { useEvent } from "./EventProvider";
 
 function CreateEvent() {
@@ -17,9 +19,10 @@ function CreateEvent() {
 
   return (
     <form
-      onSubmit={e => {
+      onSubmit={async e => {
         e.preventDefault();
-        create(formData);
+        const newEvent = await create(formData);
+        navigate(`/event/${newEvent._id}`);
       }}
     >
       <label htmlFor="title">Title</label>
