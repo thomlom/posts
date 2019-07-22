@@ -12,12 +12,15 @@ function EventDetail({ eventId }) {
     return <div>No event for {eventId}</div>;
   }
 
-  const { title, description } = event;
+  const { title, description, participants } = event;
 
   return (
     <div>
       <h2>{title}</h2>
       <p>{description}</p>
+      <p>
+        {participants.length} participant{participants.length > 1 && "s"}
+      </p>
     </div>
   );
 }

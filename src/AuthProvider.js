@@ -30,6 +30,7 @@ function AuthProvider({ children }) {
 
   function signout() {
     delete axios.defaults.headers.common["Authorization"];
+    window.localStorage.removeItem("token");
     setUserToken(null);
   }
 

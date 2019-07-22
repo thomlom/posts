@@ -17,6 +17,7 @@ function Home() {
 
     getUser();
   }, []);
+
   return (
     <div>
       <p>Hello {user.name}</p>
@@ -25,7 +26,7 @@ function Home() {
       <ul>
         {events.map(event => (
           <div>
-            <p>{event.title}</p>
+            <Link to={`/event/${event._id}`}>{event.title}</Link>
             <button onClick={() => participate(event._id)}>
               {event.participants.includes(user._id) ? "Leave" : "Join"}
             </button>

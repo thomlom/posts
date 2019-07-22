@@ -2,16 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import AuthProvider from "./AuthProvider";
-import EventProvider from "./EventProvider";
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
   <AuthProvider>
-    <EventProvider>
-      <App />
-    </EventProvider>
+    <App />
   </AuthProvider>,
   document.getElementById("root")
 );
