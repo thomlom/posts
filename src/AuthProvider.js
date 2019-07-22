@@ -1,18 +1,15 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import axios from "axios";
 
-function saveTokenForFutureRequests(token) {
-  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-}
-
 const AuthContext = createContext();
 
 function AuthProvider({ children }) {
   const [isFetchingUser, setIsFetchingUser] = useState(true);
   const [user, setUser] = useState(null);
 
-  async function getUser() {
+  async function saveTokenAndGetUser(token) {
     try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       const { data } = await axios.get("http://localhost:3001/me");
       setUser(data.user);
       setIsFetchingUser(false);
@@ -30,8 +27,7 @@ function AuthProvider({ children }) {
 
         if (token) {
           window.localStorage.setItem("token", data.token);
-          saveTokenForFutureRequests(token);
-          await getUser();
+          saveTokenAndGetUser(token);
         }
       } catch (e) {
         console.error(e);
@@ -52,8 +48,7 @@ function AuthProvider({ children }) {
     const token = window.localStorage.getItem("token");
 
     if (token) {
-      saveTokenForFutureRequests(token);
-      getUser();
+      saveTokenAndGetUser(token);
     } else {
       setIsFetchingUser(false);
     }
