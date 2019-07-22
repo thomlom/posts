@@ -7,17 +7,16 @@ function EventProvider({ children }) {
   const [isFetchingEvents, setIsFetchingEvents] = useState(true);
   const [events, setEvents] = useState([]);
 
-  async function participate(eventToUpdateId) {
-    const { data } = await axios.get(
-      `http://localhost:3001/event/${eventToUpdateId}/participate`
+  async function participate(eventId) {
+    const { data } = await axios.post(
+      `http://localhost:3001/event/participate`,
+      { eventId }
     );
 
     const updatedEvent = data.data;
 
     setEvents(events =>
-      events.map(event =>
-        event._id === eventToUpdateId ? updatedEvent : event
-      )
+      events.map(event => (event._id === eventId ? updatedEvent : event))
     );
   }
 
@@ -38,7 +37,7 @@ function EventProvider({ children }) {
 
   useEffect(() => {
     async function fetchEvents() {
-      const { data } = await axios.get("http://localhost:3001/event");
+      const { data } = await axios.get("http://localhost:3001/event/all");
       setEvents(data.data);
       setIsFetchingEvents(false);
     }

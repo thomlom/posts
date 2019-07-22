@@ -8,8 +8,19 @@ function saveTokenForFutureRequests(token) {
 const AuthContext = createContext();
 
 function AuthProvider({ children }) {
-  const [isFetchingToken, setIsFetchingToken] = useState(true);
-  const [userToken, setUserToken] = useState(null);
+  const [isFetchingUser, setIsFetchingUser] = useState(true);
+  const [user, setUser] = useState(null);
+
+  async function getUser() {
+    try {
+      const { data } = await axios.get("http://localhost:3001/me");
+      setUser(data.user);
+      setIsFetchingUser(false);
+    } catch (e) {
+      console.error(e);
+      setIsFetchingUser(false);
+    }
+  }
 
   function sign(url) {
     return async function(form) {
@@ -19,8 +30,8 @@ function AuthProvider({ children }) {
 
         if (token) {
           window.localStorage.setItem("token", data.token);
-          setUserToken(token);
           saveTokenForFutureRequests(token);
+          await getUser();
         }
       } catch (e) {
         console.error(e);
@@ -31,7 +42,7 @@ function AuthProvider({ children }) {
   function signout() {
     delete axios.defaults.headers.common["Authorization"];
     window.localStorage.removeItem("token");
-    setUserToken(null);
+    setUser(null);
   }
 
   const signin = sign("http://localhost:3001/signin");
@@ -41,22 +52,22 @@ function AuthProvider({ children }) {
     const token = window.localStorage.getItem("token");
 
     if (token) {
-      setUserToken(token);
       saveTokenForFutureRequests(token);
+      getUser();
+    } else {
+      setIsFetchingUser(false);
     }
-
-    setIsFetchingToken(false);
   }, []);
 
-  if (isFetchingToken) {
+  if (isFetchingUser) {
     return <div>Loading</div>;
   }
 
   return (
     <AuthContext.Provider
       value={{
-        isAuthenticated: !!userToken,
-        userToken,
+        isAuthenticated: !!user,
+        user,
         signup,
         signin,
         signout,

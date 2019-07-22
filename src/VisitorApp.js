@@ -1,4 +1,5 @@
 import React from "react";
+import { Router } from "@reach/router";
 
 import { useAuth } from "./AuthProvider";
 import Signin from "./Signin";
@@ -8,9 +9,9 @@ export default function UnauthenticatedApp() {
   const { signin, signup } = useAuth();
 
   return (
-    <div>
-      <Signin signin={signin} />
-      <Signup signup={signup} />
-    </div>
+    <Router>
+      <Signin default signin={signin} path="/signin" />
+      <Signup signup={signup} path="/signup" />
+    </Router>
   );
 }

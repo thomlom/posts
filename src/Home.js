@@ -1,22 +1,13 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
 import { Link } from "@reach/router";
 
+import { useAuth } from "./AuthProvider";
 import { useEvent } from "./EventProvider";
 import Signout from "./Signout";
 
 function Home() {
   const { events, participate } = useEvent();
-  const [user, setUser] = useState({});
-
-  useEffect(() => {
-    async function getUser() {
-      const { data } = await axios.get("http://localhost:3001/me");
-      setUser(data.user);
-    }
-
-    getUser();
-  }, []);
+  const { user } = useAuth();
 
   return (
     <div>
