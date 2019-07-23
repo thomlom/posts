@@ -62,6 +62,7 @@ function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         isAuthenticated: !!user,
+        isAdmin: user && user.permissions.includes("ADMIN"),
         user,
         signup,
         signin,
