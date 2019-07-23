@@ -1,14 +1,24 @@
 import React from "react";
+import { Router } from "@reach/router";
 
 import { useAuth } from "./AuthProvider";
 
-import UserApp from "./UserApp";
-import VisitorApp from "./VisitorApp";
+import CreateEvent from "./CreateEvent";
+import EventDetail from "./EventDetail";
+import Home from "./Home";
+import NotFound from "./NotFound";
 
 function App() {
-  const { isAuthenticated } = useAuth();
+  const { isAdmin, isAuthenticated } = useAuth();
 
-  return isAuthenticated ? <UserApp /> : <VisitorApp />;
+  return (
+    <Router>
+      <Home path="/" />
+      {isAdmin && <CreateEvent path="/create" />}
+      {isAuthenticated && <EventDetail path="/event/:eventId" />}
+      <NotFound default />
+    </Router>
+  );
 }
 
 export default App;

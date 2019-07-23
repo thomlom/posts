@@ -1,29 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "@reach/router";
+import { Dialog } from "@reach/dialog";
 
 import { useAuth } from "./AuthProvider";
-import { useEvent } from "./EventProvider";
+
+import Events from "./Events";
+import Signin from "./Signin";
 import Signout from "./Signout";
 
 function Home() {
-  const { events, participate } = useEvent();
-  const { user } = useAuth();
+  const [showDialog, setShowDialog] = useState(false);
+  const { isAuthenticated, user, signin } = useAuth();
 
   return (
     <div>
-      <p>Hello {user.name}</p>
+      {isAuthenticated && <p>Hello {user.name}</p>}
       <Link to="/create">Create an event</Link>
+      <button onClick={() => setShowDialog(true)}>Show dialog</button>
+      <Dialog isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
+        <Signin signin={signin} />
+      </Dialog>
       <Signout />
-      <ul>
-        {events.map(event => (
-          <div>
-            <Link to={`/event/${event._id}`}>{event.title}</Link>
-            <button onClick={() => participate(event._id)}>
-              {event.participants.includes(user._id) ? "Leave" : "Join"}
-            </button>
-          </div>
-        ))}
-      </ul>
+      <Events />
     </div>
   );
 }
