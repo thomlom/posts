@@ -12,8 +12,11 @@ function Header() {
   return (
     <header>
       <h1>My events</h1>
-      <button onClick={openDialog}>Login/Register</button>
-      {isAuthenticated && <Signout />}
+      {isAuthenticated ? (
+        <Signout />
+      ) : (
+        <button onClick={openDialog}>Login/Register</button>
+      )}
     </header>
   );
 }
