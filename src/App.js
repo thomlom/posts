@@ -7,6 +7,7 @@ import { useAuth } from "./AuthProvider";
 import CreateEvent from "./CreateEvent";
 import DialogAuth from "./DialogAuth";
 import EventDetail from "./EventDetail";
+import Header from "./Header";
 import Home from "./Home";
 import NotFound from "./NotFound";
 
@@ -25,6 +26,7 @@ function App() {
 
   return (
     <>
+      <Header />
       <Router>
         <Home path="/" />
         {isAdmin && <CreateEvent path="/create" />}
