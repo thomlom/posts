@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function Signup({ signup }) {
+function Signup({ signup, closeDialog }) {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -19,6 +19,7 @@ function Signup({ signup }) {
       onSubmit={e => {
         e.preventDefault();
         signup(formData);
+        closeDialog();
       }}
     >
       <label htmlFor="email">Email</label>

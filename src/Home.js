@@ -1,26 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "@reach/router";
 
 import { useAuth } from "./AuthProvider";
+import { useDialog } from "./DialogProvider";
 
-import AuthModal from "./AuthModal";
 import Events from "./Events";
 import Signout from "./Signout";
 
 function Home() {
-  const [showDialog, setShowDialog] = useState(false);
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, isAdmin, user } = useAuth();
+  const { openDialog } = useDialog();
 
   return (
     <div>
       {isAuthenticated && <p>Hello {user.name}</p>}
-      <Link to="/create">Create an event</Link>
-      <button onClick={() => setShowDialog(true)}>Show dialog</button>
-      <AuthModal
-        isOpen={showDialog}
-        onDismiss={() => setShowDialog(false)}
-      ></AuthModal>
-      <Signout />
+      {isAdmin && <Link to="/create">Create an event</Link>}
+      <button onClick={openDialog}>Login/Register</button>
+      {isAuthenticated && <Signout />}
       <Events />
     </div>
   );

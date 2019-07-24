@@ -5,6 +5,7 @@ import { createGlobalStyle } from "styled-components";
 import { useAuth } from "./AuthProvider";
 
 import CreateEvent from "./CreateEvent";
+import DialogAuth from "./DialogAuth";
 import EventDetail from "./EventDetail";
 import Home from "./Home";
 import NotFound from "./NotFound";
@@ -31,6 +32,7 @@ function App() {
         <NotFound default />
       </Router>
       <GlobalStyle />
+      <DialogAuth />
     </>
   );
 }
