@@ -1,5 +1,14 @@
 import React, { useState } from "react";
 
+import {
+  Form,
+  FormTitle,
+  FormInput,
+  FormButton,
+  Label,
+  Input,
+} from "./shared.styles";
+
 function Signin({ signin, closeDialog }) {
   const [formData, setFormData] = useState({
     email: "",
@@ -14,29 +23,34 @@ function Signin({ signin, closeDialog }) {
   }
 
   return (
-    <form
+    <Form
       onSubmit={e => {
         e.preventDefault();
         signin(formData);
         closeDialog();
       }}
     >
-      <label htmlFor="email">Email</label>
-      <input
-        type="email"
-        name="email"
-        value={formData.email}
-        onChange={handleFormChange}
-      />
-      <label htmlFor="password">Password</label>
-      <input
-        type="password"
-        name="password"
-        value={formData.password}
-        onChange={handleFormChange}
-      />
-      <button type="submit">Sign In</button>
-    </form>
+      <FormTitle>Hello again.</FormTitle>
+      <FormInput>
+        <Label htmlFor="email">Email</Label>
+        <Input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleFormChange}
+        />
+      </FormInput>
+      <FormInput>
+        <Label htmlFor="password">Password</Label>
+        <Input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleFormChange}
+        />
+      </FormInput>
+      <FormButton type="submit">Sign In</FormButton>
+    </Form>
   );
 }
 

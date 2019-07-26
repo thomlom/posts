@@ -35,6 +35,15 @@ function EventProvider({ children }) {
     }
   }
 
+  async function remove(id) {
+    try {
+      const { data } = await axios.delete(`http://localhost:3001/event/${id}`);
+      setEvents(events => events.filter(event => event._id !== data.data._id));
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   useEffect(() => {
     async function fetchEvents() {
       const { data } = await axios.get("http://localhost:3001/event/all");
@@ -50,7 +59,7 @@ function EventProvider({ children }) {
   }
 
   return (
-    <EventContext.Provider value={{ events, create, participate }}>
+    <EventContext.Provider value={{ events, create, participate, remove }}>
       {children}
     </EventContext.Provider>
   );

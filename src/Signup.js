@@ -1,5 +1,14 @@
 import React, { useState } from "react";
 
+import {
+  Form,
+  FormTitle,
+  FormInput,
+  FormButton,
+  Label,
+  Input,
+} from "./shared.styles";
+
 function Signup({ signup, closeDialog }) {
   const [formData, setFormData] = useState({
     email: "",
@@ -15,36 +24,43 @@ function Signup({ signup, closeDialog }) {
   }
 
   return (
-    <form
+    <Form
       onSubmit={e => {
         e.preventDefault();
         signup(formData);
         closeDialog();
       }}
     >
-      <label htmlFor="email">Email</label>
-      <input
-        type="email"
-        name="email"
-        value={formData.email}
-        onChange={handleFormChange}
-      />
-      <label htmlFor="name">Name</label>
-      <input
-        type="text"
-        name="name"
-        value={formData.name}
-        onChange={handleFormChange}
-      />
-      <label htmlFor="password">Password</label>
-      <input
-        type="password"
-        name="password"
-        value={formData.password}
-        onChange={handleFormChange}
-      />
-      <button type="submit">Sign Up</button>
-    </form>
+      <FormTitle>Welcome!</FormTitle>
+      <FormInput>
+        <Label htmlFor="email">Email</Label>
+        <Input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleFormChange}
+        />
+      </FormInput>
+      <FormInput>
+        <Label htmlFor="name">Name</Label>
+        <Input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleFormChange}
+        />
+      </FormInput>
+      <FormInput>
+        <Label htmlFor="password">Password</Label>
+        <Input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleFormChange}
+        />
+      </FormInput>
+      <FormButton type="submit">Sign Up</FormButton>
+    </Form>
   );
 }
 
