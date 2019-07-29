@@ -2,6 +2,14 @@ import React, { useState } from "react";
 import axios from "axios";
 import { navigate } from "@reach/router";
 import styled from "styled-components";
+import {
+  setMinutes,
+  setHours,
+  setDate,
+  setMonth,
+  setYear,
+  format,
+} from "date-fns";
 
 import { useEvent } from "./EventProvider";
 
@@ -42,19 +50,14 @@ const PreviewImage = styled.img`
 
 function CreateEvent() {
   const { create } = useEvent();
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     image: "",
+    date: new Date(),
   });
   const [isUploading, setIsUploading] = useState(false);
-
-  function handleFormChange(e) {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  }
 
   async function uploadFile(e) {
     setIsUploading(true);
@@ -78,6 +81,34 @@ function CreateEvent() {
       image: file.secure_url,
     }));
     setIsUploading(false);
+  }
+
+  function handleFormChange(e) {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  }
+
+  function handleDateChange(e) {
+    const [year, month, day] = e.target.value.split("-");
+    const date = setYear(
+      setMonth(setDate(formData.date, parseInt(day)), parseInt(month) - 1),
+      parseInt(year)
+    );
+    setFormData(formData => ({
+      ...formData,
+      date,
+    }));
+  }
+
+  function handleTimeChange(e) {
+    const [hours, minutes] = e.target.value.split(":");
+    const date = setHours(setMinutes(formData.date, minutes), hours);
+    setFormData(formData => ({
+      ...formData,
+      date,
+    }));
   }
 
   return (
@@ -118,11 +149,21 @@ function CreateEvent() {
         <FormInputsSideBySide>
           <FormInput>
             <Label htmlFor="date">Date</Label>
-            <Input type="date" name="date" />
+            <Input
+              type="date"
+              name="date"
+              value={format(formData.date, "YYYY-MM-DD")}
+              onChange={handleDateChange}
+            />
           </FormInput>
           <FormInput>
             <Label htmlFor="time">Time</Label>
-            <Input type="time" name="time" />
+            <Input
+              type="time"
+              name="time"
+              value={format(formData.date, "HH:mm")}
+              onChange={handleTimeChange}
+            />
           </FormInput>
         </FormInputsSideBySide>
 
