@@ -2,14 +2,16 @@ import React, { useState } from "react";
 
 import {
   Form,
-  FormTitle,
-  FormInput,
   FormButton,
+  FormError,
+  FormInput,
+  FormTitle,
   Label,
   Input,
 } from "./shared.styles";
 
 function Signup({ signup, closeDialog }) {
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -25,13 +27,18 @@ function Signup({ signup, closeDialog }) {
 
   return (
     <Form
-      onSubmit={e => {
+      onSubmit={async e => {
         e.preventDefault();
-        signup(formData);
-        closeDialog();
+        try {
+          await signup(formData);
+          closeDialog();
+        } catch (e) {
+          setError(e.response.data.message);
+        }
       }}
     >
       <FormTitle>Welcome!</FormTitle>
+      {error && <FormError>{error}</FormError>}
       <FormInput>
         <Label htmlFor="email">Email</Label>
         <Input

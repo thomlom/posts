@@ -21,12 +21,33 @@ export const Form = styled.form`
   }
 `;
 
-export const FormTitle = styled.h2`
-  font-size: 3rem;
+export const FormButton = styled.button`
+  width: 100%;
+  font-size: 1.6rem;
   font-weight: 700;
-  color: hsl(211, 39%, 23%);
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  color: hsl(210, 36%, 96%);
+  background-color: hsl(209, 34%, 30%);
   margin: 2rem 0;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+  }
+`;
+
+export const FormError = styled.p`
+  font-size: 1.4rem;
+  font-weight: 600;
   text-align: center;
+  padding: 1.2rem;
+  border-radius: 5px;
+  color: hsl(352, 90%, 35%);
+  background-color: hsl(360, 100%, 95%);
 `;
 
 export const FormInput = styled.div`
@@ -36,6 +57,14 @@ export const FormInput = styled.div`
   &:not(:first-child) {
     margin-top: 1rem;
   }
+`;
+
+export const FormTitle = styled.h2`
+  font-size: 3rem;
+  font-weight: 700;
+  color: hsl(211, 39%, 23%);
+  margin: 2rem 0;
+  text-align: center;
 `;
 
 export const Label = styled.label`
@@ -82,24 +111,5 @@ export const Textarea = styled.textarea`
   &:focus {
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
     outline: none;
-  }
-`;
-
-export const FormButton = styled.button`
-  width: 100%;
-  font-size: 1.6rem;
-  font-weight: 700;
-  padding: 1rem 1.5rem;
-  border: none;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  color: hsl(210, 36%, 96%);
-  background-color: hsl(209, 34%, 30%);
-  margin: 2rem 0;
-  cursor: pointer;
-
-  &:disabled {
-    opacity: 0.75;
-    cursor: not-allowed;
   }
 `;

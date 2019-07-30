@@ -22,16 +22,12 @@ function AuthProvider({ children }) {
 
   function sign(url) {
     return async function(form) {
-      try {
-        const { data } = await axios.post(url, form);
-        const token = data.token;
+      const { data } = await axios.post(url, form);
+      const token = data.token;
 
-        if (token) {
-          window.localStorage.setItem("token", data.token);
-          saveTokenAndGetUser(token);
-        }
-      } catch (e) {
-        console.error(e);
+      if (token) {
+        window.localStorage.setItem("token", data.token);
+        saveTokenAndGetUser(token);
       }
     };
   }
