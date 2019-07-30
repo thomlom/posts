@@ -24,18 +24,24 @@ function Signin({ signin, closeDialog }) {
     });
   }
 
+  async function submitSignForm(e) {
+    e.preventDefault();
+
+    if (!formData.email || !formData.password) {
+      setError("Password and email are required");
+      return;
+    }
+
+    try {
+      await signin(formData);
+      closeDialog();
+    } catch ({ response: { data } }) {
+      setError(data);
+    }
+  }
+
   return (
-    <Form
-      onSubmit={async e => {
-        e.preventDefault();
-        try {
-          await signin(formData);
-          closeDialog();
-        } catch (e) {
-          setError(e.response.data.message);
-        }
-      }}
-    >
+    <Form onSubmit={submitSignForm}>
       <FormTitle>Hello again.</FormTitle>
       {error && <FormError>{error}</FormError>}
       <FormInput>

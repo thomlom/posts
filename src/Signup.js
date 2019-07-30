@@ -25,18 +25,24 @@ function Signup({ signup, closeDialog }) {
     });
   }
 
+  async function submitSignForm(e) {
+    e.preventDefault();
+
+    if (!formData.email || !formData.password || !formData.name) {
+      setError("Password, email and name are required");
+      return;
+    }
+
+    try {
+      await signup(formData);
+      closeDialog();
+    } catch ({ response: { data } }) {
+      setError(data);
+    }
+  }
+
   return (
-    <Form
-      onSubmit={async e => {
-        e.preventDefault();
-        try {
-          await signup(formData);
-          closeDialog();
-        } catch (e) {
-          setError(e.response.data.message);
-        }
-      }}
-    >
+    <Form onSubmit={submitSignForm}>
       <FormTitle>Welcome!</FormTitle>
       {error && <FormError>{error}</FormError>}
       <FormInput>
