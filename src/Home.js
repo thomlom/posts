@@ -11,7 +11,7 @@ import { useEvent } from "./EventProvider";
 
 const EventListContainer = styled.div`
   &:not(:first-child) {
-    margin-top: 2.5rem;
+    margin-top: 4rem;
   }
 `;
 
