@@ -125,13 +125,7 @@ function EventDetail({ eventId }) {
       </EventImage>
       <EventInfos>
         <h2>{title}</h2>
-        {isAdmin ? (
-          <Button small secondary>
-            {participantsText}
-          </Button>
-        ) : (
-          <span>{participantsText}</span>
-        )}
+        <span>{participantsText}</span>
         <p>
           {description} Lorem ipsum dolor sit amet, consectetur adipisicing
           elit. Distinctio nemo facere ab veniam cupiditate qui corporis
