@@ -131,6 +131,8 @@ function CreateEvent() {
     }
   }
 
+  // TODO: Add uploading indication
+  // TODO: Add cusotm choose file button
   return (
     <FormContainer>
       <Form onSubmit={submitEventForm}>
