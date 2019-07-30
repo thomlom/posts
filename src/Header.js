@@ -26,14 +26,10 @@ const StyledHeader = styled.header`
 `;
 
 const Title = styled.h1`
-  color: hsl(211, 27%, 70%);
+  color: hsl(209, 34%, 30%);
   text-transform: uppercase;
   font-size: 2.4rem;
   text-decoration: none;
-
-  span {
-    color: hsl(209, 34%, 30%);
-  }
 `;
 
 const Nav = styled.nav`
@@ -51,9 +47,7 @@ function Header() {
   return (
     <StyledHeader>
       <Link to="/" style={{ textDecoration: "none" }}>
-        <Title>
-          My <span>events</span>
-        </Title>
+        <Title>Events</Title>
       </Link>
 
       <Nav>
