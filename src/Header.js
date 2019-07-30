@@ -12,6 +12,10 @@ const NavButton = styled(Button)`
   color: hsl(209, 34%, 30%);
   box-shadow: none;
 
+  @media (max-width: 768px) {
+    background-color: hsl(210, 36%, 96%);
+  }
+
   &:hover {
     background-color: hsl(210, 36%, 96%);
   }
@@ -38,7 +42,6 @@ const Nav = styled.nav`
   }
 `;
 
-// TODO: ADD HAMBURGER MENU
 function Header() {
   const { isAuthenticated, isAdmin, signout } = useAuth();
 
