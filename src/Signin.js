@@ -28,7 +28,7 @@ function Signin({ signin, closeDialog }) {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
-      setError("Password and email are required");
+      setError("Password and email are required.");
       return;
     }
 

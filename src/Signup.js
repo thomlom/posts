@@ -29,7 +29,7 @@ function Signup({ signup, closeDialog }) {
     e.preventDefault();
 
     if (!formData.email || !formData.password || !formData.name) {
-      setError("Password, email and name are required");
+      setError("Password, email and name are required.");
       return;
     }
 

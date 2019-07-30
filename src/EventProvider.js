@@ -21,27 +21,16 @@ function EventProvider({ children }) {
   }
 
   async function create(formData) {
-    try {
-      const { data } = await axios.post(
-        "http://localhost:3001/event",
-        formData
-      );
+    const { data } = await axios.post("http://localhost:3001/event", formData);
 
-      const newEvent = data.data;
-      setEvents(events => [...events, newEvent]);
-      return newEvent;
-    } catch (e) {
-      console.error(e);
-    }
+    const newEvent = data.data;
+    setEvents(events => [...events, newEvent]);
+    return newEvent;
   }
 
   async function remove(id) {
-    try {
-      const { data } = await axios.delete(`http://localhost:3001/event/${id}`);
-      setEvents(events => events.filter(event => event._id !== data.data._id));
-    } catch (e) {
-      console.error(e);
-    }
+    const { data } = await axios.delete(`http://localhost:3001/event/${id}`);
+    setEvents(events => events.filter(event => event._id !== data.data._id));
   }
 
   useEffect(() => {

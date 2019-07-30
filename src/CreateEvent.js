@@ -16,6 +16,7 @@ import { useEvent } from "./EventProvider";
 import {
   Form,
   FormButton,
+  FormError,
   FormInput,
   Label,
   Input,
@@ -51,6 +52,7 @@ const PreviewImage = styled.img`
 function CreateEvent() {
   const { create } = useEvent();
 
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -111,15 +113,28 @@ function CreateEvent() {
     }));
   }
 
+  async function submitEventForm(e) {
+    e.preventDefault();
+
+    const { title, description, image, date } = formData;
+
+    if (!title || !description || !image || !date) {
+      setError("Title, description, image and date are required.");
+      return;
+    }
+
+    try {
+      const newEvent = await create(formData);
+      navigate(`/event/${newEvent._id}`);
+    } catch ({ response: { data } }) {
+      setError(data);
+    }
+  }
+
   return (
     <FormContainer>
-      <Form
-        onSubmit={async e => {
-          e.preventDefault();
-          const newEvent = await create(formData);
-          navigate(`/event/${newEvent._id}`);
-        }}
-      >
+      <Form onSubmit={submitEventForm}>
+        {error && <FormError>{error}</FormError>}
         <FormInput>
           <Label htmlFor="image">Image</Label>
           <Input type="file" name="file" onChange={uploadFile} />
