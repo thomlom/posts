@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { navigate } from "@reach/router";
+import { format } from "date-fns";
 
 import { Button } from "./shared.styles";
 
@@ -9,6 +10,10 @@ import { useEvent } from "./EventProvider";
 
 const Container = styled.div`
   display: flex;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const EventImage = styled.div`
@@ -41,7 +46,11 @@ const EventImage = styled.div`
 const EventInfos = styled.div`
   flex: 1 1 0;
   margin-left: 2.5rem;
-  paddin-top: 1rem;
+  padding-top: 1rem;
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
 
   h2 {
     font-size: 3rem;
@@ -49,29 +58,27 @@ const EventInfos = styled.div`
     margin: 0;
     color: hsl(211, 39%, 23%);
   }
+`;
 
-  button,
-  span {
-    margin-top: 1rem;
-  }
+const EventParticipants = styled.p`
+  font-size: 1.2rem;
+  color: hsl(209, 23%, 60%);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+  margin-top: 0.5rem;
+`;
 
-  span {
-    font-size: 1.2rem;
-    color: hsl(209, 23%, 60%);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
+const EventDate = styled.p`
+  font-size: 1.2rem;
+  color: hsl(209, 28%, 39%);
+  font-weight: 600;
+`;
 
-  button {
-    flex-shrink: 1;
-    width: auto;
-  }
-
-  p {
-    font-size: 1.6rem;
-    color: hsl(209, 28%, 39%);
-  }
+const EventDescription = styled.p`
+  font-size: 1.6rem;
+  color: hsl(209, 28%, 39%);
 `;
 
 function EventDetail({ eventId }) {
@@ -86,7 +93,7 @@ function EventDetail({ eventId }) {
     return <div>No event for {eventId}</div>;
   }
 
-  const { title, description, participants, image } = event;
+  const { title, description, date, participants, image } = event;
 
   const participantsText = `${participants.length} participant${
     participants.length > 1 ? "s" : ""
@@ -125,13 +132,9 @@ function EventDetail({ eventId }) {
       </EventImage>
       <EventInfos>
         <h2>{title}</h2>
-        <span>{participantsText}</span>
-        <p>
-          {description} Lorem ipsum dolor sit amet, consectetur adipisicing
-          elit. Distinctio nemo facere ab veniam cupiditate qui corporis
-          incidunt culpa! Eius, veritatis. Incidunt minus eveniet reiciendis
-          inventore autem! Nihil harum reiciendis quasi.
-        </p>
+        <EventParticipants>{participantsText}</EventParticipants>
+        <EventDate>{format(date, "MMMM DD, YYYY | HH:mm")}</EventDate>
+        <EventDescription>{description}</EventDescription>
       </EventInfos>
     </Container>
   );
