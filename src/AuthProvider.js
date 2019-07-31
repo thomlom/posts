@@ -3,7 +3,6 @@ import axios from "axios";
 
 const AuthContext = createContext();
 
-// TODO: Add user provider
 function AuthProvider({ children }) {
   const [isFetchingUser, setIsFetchingUser] = useState(true);
   const [user, setUser] = useState(null);
