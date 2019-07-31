@@ -112,7 +112,12 @@ function Home() {
           return (
             <EventCard
               key={event._id}
-              onClick={() => navigate(`/event/${event._id}`)}
+              onClick={e => {
+                e.preventDefault();
+                isAuthenticated
+                  ? navigate(`/event/${event._id}`)
+                  : openDialog();
+              }}
             >
               <span>
                 {distanceInWordsToNow(event.date, { addSuffix: true })}

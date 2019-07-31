@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
-import axios from "axios";
+
+import callApi, { TOKEN_NAME } from "./services/callApi";
 
 const AuthContext = createContext();
 
@@ -7,10 +8,11 @@ function AuthProvider({ children }) {
   const [isFetchingUser, setIsFetchingUser] = useState(true);
   const [user, setUser] = useState(null);
 
-  async function saveTokenAndGetUser(token) {
+  async function getUser() {
     try {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      const { data } = await axios.get("http://localhost:3001/me");
+      const { data } = await callApi("http://localhost:3001/me", {
+        method: "GET",
+      });
       setUser(data.user);
       setIsFetchingUser(false);
     } catch (e) {
@@ -21,19 +23,21 @@ function AuthProvider({ children }) {
 
   function sign(url) {
     return async function(form) {
-      const { data } = await axios.post(url, form);
+      const { data } = await callApi(url, {
+        method: "POST",
+        data: form,
+      });
       const token = data.token;
 
       if (token) {
-        window.localStorage.setItem("token", data.token);
-        saveTokenAndGetUser(token);
+        window.localStorage.setItem(TOKEN_NAME, data.token);
+        getUser(token);
       }
     };
   }
 
   function signout() {
-    delete axios.defaults.headers.common["Authorization"];
-    window.localStorage.removeItem("token");
+    window.localStorage.removeItem(TOKEN_NAME);
     setUser(null);
   }
 
@@ -41,13 +45,8 @@ function AuthProvider({ children }) {
   const signup = sign("http://localhost:3001/signup");
 
   useEffect(() => {
-    const token = window.localStorage.getItem("token");
-
-    if (token) {
-      saveTokenAndGetUser(token);
-    } else {
-      setIsFetchingUser(false);
-    }
+    const token = window.localStorage.getItem(TOKEN_NAME);
+    token ? getUser() : setIsFetchingUser(false);
   }, []);
 
   if (isFetchingUser) {

@@ -47,6 +47,7 @@ const PreviewImage = styled.img`
   border-radius: 5px;
   margin-top: 1rem;
   max-height: 300px;
+  object-fit: cover;
 `;
 
 function CreateEvent() {
@@ -68,14 +69,10 @@ function CreateEvent() {
     data.append("file", files[0]);
     data.append("upload_preset", "events");
 
-    // TODO: fix this hacky thing by setting up authorization on necessary requests
-    delete axios.defaults.headers.common["Authorization"];
     const res = await axios.post(
       "https://api.cloudinary.com/v1_1/thomlom/image/upload",
       data
     );
-    const token = window.localStorage.getItem("token");
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
     const file = res.data;
     setFormData(formData => ({
@@ -132,7 +129,7 @@ function CreateEvent() {
   }
 
   // TODO: Add uploading indication
-  // TODO: Add cusotm choose file button
+  // TODO: Add custom choose file button
   return (
     <FormContainer>
       <Form onSubmit={submitEventForm}>

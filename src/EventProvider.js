@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
-import axios from "axios";
+
+import callApi from "./services/callApi";
 
 const EventContext = createContext();
 
@@ -8,10 +9,10 @@ function EventProvider({ children }) {
   const [events, setEvents] = useState([]);
 
   async function participate(eventId) {
-    const { data } = await axios.post(
-      `http://localhost:3001/event/participate`,
-      { eventId }
-    );
+    const { data } = await callApi(`http://localhost:3001/event/participate`, {
+      method: "POST",
+      data: { eventId },
+    });
 
     const updatedEvent = data.data;
 
@@ -21,7 +22,10 @@ function EventProvider({ children }) {
   }
 
   async function create(formData) {
-    const { data } = await axios.post("http://localhost:3001/event", formData);
+    const { data } = await callApi("http://localhost:3001/event", {
+      method: "POST",
+      data: formData,
+    });
 
     const newEvent = data.data;
     setEvents(events => [...events, newEvent]);
@@ -29,13 +33,17 @@ function EventProvider({ children }) {
   }
 
   async function remove(id) {
-    const { data } = await axios.delete(`http://localhost:3001/event/${id}`);
+    const { data } = await callApi(`http://localhost:3001/event/${id}`, {
+      method: "DELETE",
+    });
     setEvents(events => events.filter(event => event._id !== data.data._id));
   }
 
   useEffect(() => {
     async function fetchEvents() {
-      const { data } = await axios.get("http://localhost:3001/event/all");
+      const { data } = await callApi("http://localhost:3001/event/all", {
+        method: "GET",
+      });
       setEvents(data.data);
       setIsFetchingEvents(false);
     }

@@ -71,7 +71,7 @@ const EventParticipants = styled.p`
 `;
 
 const EventDate = styled.p`
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   color: hsl(209, 28%, 39%);
   font-weight: 600;
 `;
