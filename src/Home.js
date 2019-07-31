@@ -110,7 +110,10 @@ function Home() {
       <EventGrid>
         {events.map(event => {
           return (
-            <EventCard onClick={() => navigate(`/event/${event._id}`)}>
+            <EventCard
+              key={event._id}
+              onClick={() => navigate(`/event/${event._id}`)}
+            >
               <span>
                 {distanceInWordsToNow(event.date, { addSuffix: true })}
               </span>
