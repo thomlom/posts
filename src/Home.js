@@ -153,6 +153,7 @@ function Home() {
                 {isAuthenticated ? (
                   <Button
                     small
+                    secondary={event.participants.includes(user._id)}
                     onClick={e => {
                       e.stopPropagation();
                       participate(event._id);

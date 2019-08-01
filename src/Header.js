@@ -9,6 +9,7 @@ import { Button } from "./shared.styles";
 
 const NavButton = styled(Button)`
   background-color: transparent;
+  border: none;
   color: hsl(209, 34%, 30%);
   box-shadow: none;
 
