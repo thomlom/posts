@@ -13,6 +13,7 @@
     "styled-components": "^4.3.2"
   },
   "devDependencies": {
+    "env-cmd": "^9.0.3",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
     "husky": "^3.0.0",
@@ -23,6 +24,7 @@
     "dev": "yarn start",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:staging": "env-cmd -f .env.staging npm run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

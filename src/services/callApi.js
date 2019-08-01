@@ -10,5 +10,9 @@ export default function callApi(endpoint, { ...rest }) {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  return axios({ url: endpoint, headers, ...rest });
+  return axios({
+    url: `${process.env.REACT_APP_API_URL}${endpoint}`,
+    headers,
+    ...rest,
+  });
 }

@@ -9,7 +9,7 @@ function EventProvider({ children }) {
   const [events, setEvents] = useState([]);
 
   async function participate(eventId) {
-    const { data } = await callApi(`http://localhost:3001/event/participate`, {
+    const { data } = await callApi("/event/participate", {
       method: "POST",
       data: { eventId },
     });
@@ -22,7 +22,7 @@ function EventProvider({ children }) {
   }
 
   async function create(formData) {
-    const { data } = await callApi("http://localhost:3001/event", {
+    const { data } = await callApi("/event", {
       method: "POST",
       data: formData,
     });
@@ -33,7 +33,7 @@ function EventProvider({ children }) {
   }
 
   async function remove(id) {
-    const { data } = await callApi(`http://localhost:3001/event/${id}`, {
+    const { data } = await callApi(`/event/${id}`, {
       method: "DELETE",
     });
     setEvents(events => events.filter(event => event._id !== data.data._id));
@@ -41,7 +41,7 @@ function EventProvider({ children }) {
 
   useEffect(() => {
     async function fetchEvents() {
-      const { data } = await callApi("http://localhost:3001/event/all", {
+      const { data } = await callApi("/event/all", {
         method: "GET",
       });
       setEvents(data.data);

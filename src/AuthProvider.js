@@ -10,7 +10,7 @@ function AuthProvider({ children }) {
 
   async function getUser() {
     try {
-      const { data } = await callApi("http://localhost:3001/me", {
+      const { data } = await callApi("/me", {
         method: "GET",
       });
       setUser(data.user);
@@ -41,8 +41,8 @@ function AuthProvider({ children }) {
     setUser(null);
   }
 
-  const signin = sign("http://localhost:3001/signin");
-  const signup = sign("http://localhost:3001/signup");
+  const signin = sign("/signin");
+  const signup = sign("/signup");
 
   useEffect(() => {
     const token = window.localStorage.getItem(TOKEN_NAME);
