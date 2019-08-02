@@ -1,10 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import AuthProvider from "./AuthProvider";
-import DialogProvider from "./DialogProvider";
-import EventProvider from "./EventProvider";
-
+import AppProviders from "./AppProviders";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
@@ -13,13 +10,9 @@ import "@reach/dialog/styles.css";
 import "./styles/index.css";
 
 ReactDOM.render(
-  <AuthProvider>
-    <DialogProvider>
-      <EventProvider>
-        <App />
-      </EventProvider>
-    </DialogProvider>
-  </AuthProvider>,
+  <AppProviders>
+    <App />
+  </AppProviders>,
   document.getElementById("root")
 );
 
