@@ -54,19 +54,18 @@ function DialogAuth() {
   const { signin, signup } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
 
+  function close() {
+    closeDialog();
+    setIsLogin(true);
+  }
+
   return (
-    <StyledDialog
-      isOpen={isOpen}
-      onDismiss={() => {
-        setIsLogin(true);
-        closeDialog();
-      }}
-    >
+    <StyledDialog isOpen={isOpen} onDismiss={close}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         className="icon-close"
-        onClick={closeDialog}
+        onClick={close}
       >
         <path
           className="secondary"
@@ -75,9 +74,9 @@ function DialogAuth() {
         />
       </svg>
       {isLogin ? (
-        <Signin closeDialog={closeDialog} signin={signin} />
+        <Signin closeDialog={close} signin={signin} />
       ) : (
-        <Signup closeDialog={closeDialog} signup={signup} />
+        <Signup closeDialog={close} signup={signup} />
       )}
       {isLogin && (
         <ButtonLink
