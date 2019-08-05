@@ -151,13 +151,19 @@ function Home() {
                 {isAuthenticated ? (
                   <Button
                     small
-                    secondary={event.participants.includes(user._id)}
+                    secondary={event.participants.some(
+                      participant => participant._id === user._id
+                    )}
                     onClick={e => {
                       e.stopPropagation();
                       participate(event._id);
                     }}
                   >
-                    {event.participants.includes(user._id) ? "Leave" : "Join"}
+                    {event.participants.some(
+                      participant => participant._id === user._id
+                    )
+                      ? "Leave"
+                      : "Join"}
                   </Button>
                 ) : (
                   <Button

@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { navigate } from "@reach/router";
 import moment from "moment";
 
 import { Button } from "./shared.styles";
+import CustomDialog from "./CustomDialog";
 
 import { useAuth } from "./AuthProvider";
 import { useEvent } from "./EventProvider";
@@ -16,7 +17,7 @@ const Container = styled.div`
   }
 `;
 
-const EventImage = styled.div`
+const Image = styled.div`
   flex: 1 1 0;
 
   img {
@@ -43,7 +44,7 @@ const EventImage = styled.div`
   }
 `;
 
-const EventInfos = styled.div`
+const Infos = styled.div`
   flex: 1 1 0;
   margin-left: 2.5rem;
   padding-top: 1rem;
@@ -60,7 +61,7 @@ const EventInfos = styled.div`
   }
 `;
 
-const EventParticipants = styled.p`
+const ParticipantsText = styled.p`
   font-size: 1.2rem;
   color: hsl(209, 23%, 60%);
   font-weight: 500;
@@ -70,20 +71,44 @@ const EventParticipants = styled.p`
   margin-top: 0.5rem;
 `;
 
-const EventDate = styled.p`
+const Date = styled.p`
   font-size: 1.4rem;
   color: hsl(209, 28%, 39%);
   font-weight: 600;
 `;
 
-const EventDescription = styled.p`
+const Description = styled.p`
   font-size: 1.6rem;
   color: hsl(209, 28%, 39%);
 `;
 
-function EventDetail({ eventId }) {
-  const { events, participate, remove } = useEvent();
+const Participants = styled.div`
+  padding: 2rem;
+
+  h2 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: hsl(211, 39%, 23%);
+    margin: 2rem 0;
+    text-align: center;
+  }
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    p {
+      font-size: 1.8rem;
+      color: hsl(209, 34%, 30%);
+    }
+  }
+`;
+
+const EventDetail = ({ eventId }) => {
+  const [showParticipants, setShowParticipants] = useState(false);
   const { user } = useAuth();
+  const { events, participate, remove, removeParticipant } = useEvent();
 
   const event = events.find(event => {
     return event._id === eventId;
@@ -93,51 +118,79 @@ function EventDetail({ eventId }) {
     return <div>No event for {eventId}</div>;
   }
 
+  const removeEvent = () => {
+    if (window.confirm("Are you sure you want to delete this event?")) {
+      remove(event._id);
+      navigate("/");
+    }
+  };
+
   const { title, description, date, participants, image } = event;
 
   const participantsText = `${participants.length} participant${
     participants.length > 1 ? "s" : ""
   }`;
 
+  const loggedUserIsCreator = event.createdBy === user._id;
+
   return (
     <Container>
-      <EventImage>
+      <Image>
         <img src={image} alt={title} />
         <div>
-          <Button
-            onClick={e => {
-              e.stopPropagation();
-              participate(event._id);
-            }}
-          >
-            {event.participants.includes(user._id) ? "Leave" : "Join"}
+          <Button onClick={() => participate(event._id)}>
+            {event.participants.some(
+              participant => participant._id === user._id
+            )
+              ? "Leave"
+              : "Join"}
           </Button>
-          {event.createdBy === user._id && (
-            <Button
-              secondary
-              onClick={e => {
-                e.stopPropagation();
-                if (
-                  window.confirm("Are you sure you want to delete this event?")
-                ) {
-                  remove(event._id);
-                  navigate("/");
-                }
-              }}
-            >
+          {loggedUserIsCreator && (
+            <Button secondary onClick={removeEvent}>
               Delete
             </Button>
           )}
         </div>
-      </EventImage>
-      <EventInfos>
+      </Image>
+      <Infos>
         <h2>{title}</h2>
-        <EventParticipants>{participantsText}</EventParticipants>
-        <EventDate>{moment(date).format("MMMM DD, YYYY | hh:mm")}</EventDate>
-        <EventDescription>{description}</EventDescription>
-      </EventInfos>
+        {loggedUserIsCreator && participants.length > 0 ? (
+          <Button secondary small onClick={() => setShowParticipants(true)}>
+            {participantsText}
+          </Button>
+        ) : (
+          <ParticipantsText>{participantsText}</ParticipantsText>
+        )}
+        <Date>{moment(date).format("MMMM DD, YYYY | hh:mm")}</Date>
+        <Description>{description}</Description>
+      </Infos>
+      {loggedUserIsCreator && participants.length > 0 && (
+        <CustomDialog
+          isOpen={showParticipants}
+          onDismiss={() => setShowParticipants(false)}
+        >
+          <Participants>
+            <h2>Participants</h2>
+            {participants.map(participant => {
+              return (
+                <div key={participant._id}>
+                  <p>{participant.name}</p>
+                  <Button
+                    small
+                    onClick={() => {
+                      removeParticipant(event._id, participant._id);
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              );
+            })}
+          </Participants>
+        </CustomDialog>
+      )}
     </Container>
   );
-}
+};
 
 export default EventDetail;

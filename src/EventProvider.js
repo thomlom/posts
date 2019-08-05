@@ -39,6 +39,22 @@ function EventProvider({ children }) {
     setEvents(events => events.filter(event => event._id !== data.data._id));
   }
 
+  async function removeParticipant(eventId, participantId) {
+    const { data } = await callApi(`/event/participants`, {
+      method: "DELETE",
+      data: {
+        eventId,
+        participantId,
+      },
+    });
+
+    const updatedEvent = data.data;
+
+    setEvents(events =>
+      events.map(event => (event._id === eventId ? updatedEvent : event))
+    );
+  }
+
   useEffect(() => {
     async function fetchEvents() {
       const { data } = await callApi("/event/all", {
@@ -56,7 +72,9 @@ function EventProvider({ children }) {
   }
 
   return (
-    <EventContext.Provider value={{ events, create, participate, remove }}>
+    <EventContext.Provider
+      value={{ events, create, participate, remove, removeParticipant }}
+    >
       {children}
     </EventContext.Provider>
   );

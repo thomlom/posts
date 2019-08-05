@@ -11,7 +11,6 @@ export const Button = styled.button`
     props.secondary ? "hsl(210, 36%, 96%)" : "hsl(209, 34%, 30%);"};
   color: ${props =>
     props.secondary ? "hsl(209, 34%, 30%)" : "hsl(210, 36%, 96%)"};
-  border: 1px solid ${props => props.secondary && "hsl(209, 34%, 30%)"};
   cursor: pointer;
 `;
 
