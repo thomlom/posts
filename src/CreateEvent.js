@@ -2,14 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import { navigate } from "@reach/router";
 import styled from "styled-components";
-import {
-  setMinutes,
-  setHours,
-  setDate,
-  setMonth,
-  setYear,
-  format,
-} from "date-fns";
+import Datetime from "react-datetime";
+
+import "./styles/datetime.css";
 
 import { useEvent } from "./EventProvider";
 
@@ -28,20 +23,6 @@ const FormContainer = styled.div`
   margin: 0 auto;
 `;
 
-const FormInputsSideBySide = styled.div`
-  display: flex;
-  margin-top: 1rem;
-
-  div {
-    flex: 1 1 0;
-
-    &:not(:first-child) {
-      margin: 0;
-      margin-left: 1rem;
-    }
-  }
-`;
-
 const PreviewImage = styled.img`
   display: block;
   border-radius: 5px;
@@ -58,7 +39,7 @@ function CreateEvent() {
     title: "",
     description: "",
     image: "",
-    date: new Date(),
+    date: null,
   });
   const [isUploading, setIsUploading] = useState(false);
 
@@ -89,25 +70,11 @@ function CreateEvent() {
     });
   }
 
-  function handleDateChange(e) {
-    const [year, month, day] = e.target.value.split("-");
-    const date = setYear(
-      setMonth(setDate(formData.date, parseInt(day)), parseInt(month) - 1),
-      parseInt(year)
-    );
-    setFormData(formData => ({
+  function handleDateChange(momentInstance) {
+    setFormData({
       ...formData,
-      date,
-    }));
-  }
-
-  function handleTimeChange(e) {
-    const [hours, minutes] = e.target.value.split(":");
-    const date = setHours(setMinutes(formData.date, minutes), hours);
-    setFormData(formData => ({
-      ...formData,
-      date,
-    }));
+      date: momentInstance.toDate(),
+    });
   }
 
   async function submitEventForm(e) {
@@ -128,8 +95,6 @@ function CreateEvent() {
     }
   }
 
-  // TODO: Add uploading indication
-  // TODO: Add custom choose file button
   return (
     <FormContainer>
       <Form onSubmit={submitEventForm}>
@@ -137,6 +102,7 @@ function CreateEvent() {
         <FormInput>
           <Label htmlFor="image">Image</Label>
           <Input type="file" name="file" onChange={uploadFile} />
+          {isUploading && <span>Uploading...</span>}
           {formData.image && (
             <PreviewImage src={formData.image} alt="Upload Preview" />
           )}
@@ -160,27 +126,10 @@ function CreateEvent() {
             rows={5}
           />
         </FormInput>
-        <FormInputsSideBySide>
-          <FormInput>
-            <Label htmlFor="date">Date</Label>
-            <Input
-              type="date"
-              name="date"
-              value={format(formData.date, "YYYY-MM-DD")}
-              onChange={handleDateChange}
-            />
-          </FormInput>
-          <FormInput>
-            <Label htmlFor="time">Time</Label>
-            <Input
-              type="time"
-              name="time"
-              value={format(formData.date, "HH:mm")}
-              onChange={handleTimeChange}
-            />
-          </FormInput>
-        </FormInputsSideBySide>
-
+        <FormInput>
+          <Label htmlFor="date">Date</Label>
+          <Datetime onChange={handleDateChange} />
+        </FormInput>
         <FormButton type="submit" disabled={isUploading}>
           Create
         </FormButton>

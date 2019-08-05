@@ -55,6 +55,12 @@ export const FormInput = styled.div`
   display: flex;
   flex-direction: column;
 
+  span {
+    color: hsl(211, 39%, 23%);
+    margin-top: 1rem;
+    font-size: 1.2rem;
+  }
+
   &:not(:first-child) {
     margin-top: 1rem;
   }

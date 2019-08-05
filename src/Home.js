@@ -1,7 +1,7 @@
 import React from "react";
 import { navigate } from "@reach/router";
 import styled from "styled-components";
-import { distanceInWordsToNow, isAfter } from "date-fns";
+import moment from "moment";
 
 import { Button } from "./shared.styles";
 
@@ -119,9 +119,7 @@ function Home() {
                   : openDialog();
               }}
             >
-              <span>
-                {distanceInWordsToNow(event.date, { addSuffix: true })}
-              </span>
+              <span>{moment(event.date).fromNow()}</span>
               {isAdmin && (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -182,7 +180,7 @@ function Home() {
 
   const [upcomingEvents, pastEvents] = events.reduce(
     (acc, event) => {
-      if (isAfter(event.date, Date.now())) {
+      if (moment(event.date).isAfter(Date.now())) {
         return [[...acc[0], event], [...acc[1]]];
       } else {
         return [[...acc[0]], [...acc[1], event]];

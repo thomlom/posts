@@ -6,7 +6,7 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
 import "normalize.css";
-import "@reach/dialog/styles.css";
+
 import "./styles/index.css";
 
 ReactDOM.render(

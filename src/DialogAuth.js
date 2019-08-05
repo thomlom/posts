@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Dialog } from "@reach/dialog";
 
+import "@reach/dialog/styles.css";
+
 import { useDialog } from "./DialogProvider";
 import { useAuth } from "./AuthProvider";
 

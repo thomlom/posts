@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { navigate } from "@reach/router";
-import { format } from "date-fns";
+import moment from "moment";
 
 import { Button } from "./shared.styles";
 
@@ -133,7 +133,7 @@ function EventDetail({ eventId }) {
       <EventInfos>
         <h2>{title}</h2>
         <EventParticipants>{participantsText}</EventParticipants>
-        <EventDate>{format(date, "MMMM DD, YYYY | HH:mm")}</EventDate>
+        <EventDate>{moment(date).format("MMMM DD, YYYY | hh:mm")}</EventDate>
         <EventDescription>{description}</EventDescription>
       </EventInfos>
     </Container>
