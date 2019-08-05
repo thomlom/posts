@@ -18,7 +18,7 @@ const Container = styled.div`
 `;
 
 function App() {
-  const { isAdmin, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   return (
     <>
@@ -26,7 +26,7 @@ function App() {
       <Container>
         <Router>
           <Home path="/" />
-          {isAdmin && <CreateEvent path="/create" />}
+          {isAuthenticated && <CreateEvent path="/create" />}
           {isAuthenticated && <EventDetail path="/event/:eventId" />}
           <NotFound default />
         </Router>

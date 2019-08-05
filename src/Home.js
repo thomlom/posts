@@ -102,7 +102,7 @@ const EventCard = styled.li`
 
 function Home() {
   const { events, participate, remove } = useEvent();
-  const { isAuthenticated, isAdmin, user } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { openDialog } = useDialog();
 
   function getEventsList(events) {
@@ -120,7 +120,7 @@ function Home() {
               }}
             >
               <span>{moment(event.date).fromNow()}</span>
-              {isAdmin && (
+              {event.isCreator && (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"

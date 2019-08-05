@@ -83,7 +83,7 @@ const EventDescription = styled.p`
 
 function EventDetail({ eventId }) {
   const { events, participate, remove } = useEvent();
-  const { isAdmin, user } = useAuth();
+  const { user } = useAuth();
 
   const event = events.find(event => {
     return event._id === eventId;
@@ -112,7 +112,7 @@ function EventDetail({ eventId }) {
           >
             {event.participants.includes(user._id) ? "Leave" : "Join"}
           </Button>
-          {isAdmin && (
+          {event.isCreator && (
             <Button
               secondary
               onClick={e => {

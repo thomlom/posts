@@ -83,25 +83,25 @@ const StyledNav = styled.nav`
 `;
 
 function Nav() {
-  const { isAuthenticated, isAdmin, signout } = useAuth();
+  const { isAuthenticated, signout } = useAuth();
   const { openDialog } = useDialog();
 
   return (
     <StyledNav>
-      {isAdmin && (
-        <Link to="/create">
-          <NavButton>Add new event</NavButton>
-        </Link>
-      )}
       {isAuthenticated ? (
-        <NavButton
-          onClick={() => {
-            signout();
-            navigate("/");
-          }}
-        >
-          Sign Out
-        </NavButton>
+        <>
+          <Link to="/create">
+            <NavButton>Add new event</NavButton>
+          </Link>
+          <NavButton
+            onClick={() => {
+              signout();
+              navigate("/");
+            }}
+          >
+            Sign Out
+          </NavButton>
+        </>
       ) : (
         <NavButton onClick={openDialog}>Sign In</NavButton>
       )}
@@ -123,12 +123,12 @@ function Header() {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            class="icon-close"
+            className="icon-close"
             onClick={toggleMenu}
           >
             <path
-              class="secondary"
-              fill-rule="evenodd"
+              className="secondary"
+              fillRule="evenodd"
               d="M15.78 14.36a1 1 0 0 1-1.42 1.42l-2.82-2.83-2.83 2.83a1 1 0 1 1-1.42-1.42l2.83-2.82L7.3 8.7a1 1 0 0 1 1.42-1.42l2.83 2.83 2.82-2.83a1 1 0 0 1 1.42 1.42l-2.83 2.83 2.83 2.82z"
             />
           </svg>
@@ -136,12 +136,12 @@ function Header() {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            class="icon-menu"
+            className="icon-menu"
             onClick={toggleMenu}
           >
             <path
-              class="secondary"
-              fill-rule="evenodd"
+              className="secondary"
+              fillRule="evenodd"
               d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z"
             />
           </svg>
