@@ -112,7 +112,7 @@ function EventDetail({ eventId }) {
           >
             {event.participants.includes(user._id) ? "Leave" : "Join"}
           </Button>
-          {event.isCreator && (
+          {event.createdBy === user._id && (
             <Button
               secondary
               onClick={e => {

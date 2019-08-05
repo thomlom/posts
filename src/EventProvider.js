@@ -1,12 +1,10 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 
-import { useAuth } from "./AuthProvider";
 import callApi from "./services/callApi";
 
 const EventContext = createContext();
 
 function EventProvider({ children }) {
-  const { user } = useAuth();
   const [isFetchingEvents, setIsFetchingEvents] = useState(true);
   const [events, setEvents] = useState([]);
 
@@ -46,16 +44,12 @@ function EventProvider({ children }) {
       const { data } = await callApi("/event/all", {
         method: "GET",
       });
-      const events = data.data.map(event => ({
-        ...event,
-        isCreator: user._id === event.createdBy,
-      }));
-      setEvents(events);
+      setEvents(data.data);
       setIsFetchingEvents(false);
     }
 
     fetchEvents();
-  }, [user._id]);
+  }, []);
 
   if (isFetchingEvents) {
     return <div>Loading</div>;

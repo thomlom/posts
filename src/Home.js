@@ -120,7 +120,7 @@ function Home() {
               }}
             >
               <span>{moment(event.date).fromNow()}</span>
-              {event.isCreator && (
+              {isAuthenticated && event.createdBy === user._id && (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
