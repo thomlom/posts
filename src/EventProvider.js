@@ -15,7 +15,11 @@ function eventReducer(events, action) {
     case "GET":
       return action.payload;
     case "ADD":
-      return [...events, action.payload];
+      const newEvents = [...events, action.payload];
+      newEvents.sort(
+        (a, b) => new Date(a.date).getTime() > new Date(b.date).getTime()
+      );
+      return newEvents;
     case "PARTICIPATE":
       return events.map(event =>
         event._id === action.payload.eventId
