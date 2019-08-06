@@ -54,6 +54,10 @@ export const FormInput = styled.div`
   display: flex;
   flex-direction: column;
 
+  label + * {
+    margin-top: 1rem;
+  }
+
   span {
     color: hsl(211, 39%, 23%);
     margin-top: 1rem;

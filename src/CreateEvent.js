@@ -106,7 +106,11 @@ function CreateEvent() {
         </FormInput>
         <FormInput>
           <Label htmlFor="date">Date*</Label>
-          <Datetime onChange={handleDateChange} dateFormat="Do MMMM YYYY" />
+          <Datetime
+            onChange={handleDateChange}
+            dateFormat="Do MMMM YYYY"
+            input={false}
+          />
         </FormInput>
         <FormInput>
           <Label htmlFor="address">Address</Label>

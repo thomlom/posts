@@ -1,46 +1,81 @@
-import React, { useState, useEffect, createContext, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useReducer,
+  useEffect,
+  useContext,
+} from "react";
 
 import callApi from "./services/callApi";
 
 const EventContext = createContext();
 
+function eventReducer(events, action) {
+  switch (action.type) {
+    case "GET":
+      return action.payload;
+    case "ADD":
+      return [...events, action.payload];
+    case "PARTICIPATE":
+      return events.map(event =>
+        event._id === action.payload.eventId
+          ? action.payload.updatedEvent
+          : event
+      );
+    case "REMOVE":
+      return events.filter(event => event._id !== action.payload.eventId);
+    case "REMOVE_PARTICIPANT":
+      return events.map(event =>
+        event._id === action.payload.eventId
+          ? action.payload.updatedEvent
+          : event
+      );
+    default:
+      return events;
+  }
+}
+
 function EventProvider({ children }) {
   const [isFetchingEvents, setIsFetchingEvents] = useState(true);
-  const [events, setEvents] = useState([]);
+  const [events, dispatch] = useReducer(eventReducer, []);
 
   async function participate(eventId) {
-    const { data } = await callApi("/event/participate", {
+    const {
+      data: { data: updatedEvent },
+    } = await callApi("/event/participate", {
       method: "POST",
       data: { eventId },
     });
 
-    const updatedEvent = data.data;
-
-    setEvents(events =>
-      events.map(event => (event._id === eventId ? updatedEvent : event))
-    );
+    dispatch({ type: "PARTICIPATE", payload: { eventId, updatedEvent } });
   }
 
   async function create(formData) {
-    const { data } = await callApi("/event", {
+    const {
+      data: { data: newEvent },
+    } = await callApi("/event", {
       method: "POST",
       data: formData,
     });
 
-    const newEvent = data.data;
-    setEvents(events => [...events, newEvent]);
+    dispatch({ type: "ADD", payload: newEvent });
     return newEvent;
   }
 
   async function remove(id) {
-    const { data } = await callApi(`/event/${id}`, {
+    const {
+      data: { data: removedEvent },
+    } = await callApi(`/event/${id}`, {
       method: "DELETE",
     });
-    setEvents(events => events.filter(event => event._id !== data.data._id));
+
+    dispatch({ type: "REMOVE", payload: { eventId: removedEvent._id } });
   }
 
   async function removeParticipant(eventId, participantId) {
-    const { data } = await callApi(`/event/participants`, {
+    const {
+      data: { data: updatedEvent },
+    } = await callApi(`/event/participants`, {
       method: "DELETE",
       data: {
         eventId,
@@ -48,19 +83,20 @@ function EventProvider({ children }) {
       },
     });
 
-    const updatedEvent = data.data;
-
-    setEvents(events =>
-      events.map(event => (event._id === eventId ? updatedEvent : event))
-    );
+    dispatch({
+      type: "REMOVE_PARTICIPANT",
+      payload: { eventId, updatedEvent },
+    });
   }
 
   useEffect(() => {
     async function fetchEvents() {
-      const { data } = await callApi("/event/all", {
+      const {
+        data: { data },
+      } = await callApi("/event/all", {
         method: "GET",
       });
-      setEvents(data.data);
+      dispatch({ type: "GET", payload: data });
       setIsFetchingEvents(false);
     }
 
