@@ -1,104 +1,15 @@
 import React from "react";
 import { navigate } from "@reach/router";
-import styled from "styled-components";
 import moment from "moment";
-
-import { Button } from "./shared.styles";
 
 import { useAuth } from "./AuthProvider";
 import { useDialog } from "./DialogProvider";
 import { useEvent } from "./EventProvider";
 
-const EventListContainer = styled.div`
-  &:not(:first-child) {
-    margin-top: 4rem;
-  }
-`;
+import IconDelete from "./IconDelete";
 
-const Title = styled.h2`
-  text-transform: uppercase;
-  font-size: 2rem;
-  letter-spacing: 0.05em;
-  font-weight: 700;
-  color: hsl(210, 22%, 49%);
-
-  span {
-    color: hsl(211, 39%, 23%);
-  }
-`;
-
-const EventGrid = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
-  grid-gap: 2.5rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-`;
-
-const EventCard = styled.li`
-  display: flex;
-  flex-direction: column;
-  background-color: hsl(210, 36%, 96%);
-  border-radius: 5px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  cursor: pointer;
-  position: relative;
-
-  span {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    background-color: hsl(210, 36%, 96%);
-    color: hsl(209, 34%, 30%);
-    padding: 0.75rem;
-    border-radius: 5px;
-    font-size: 1.2rem;
-    font-weight: 700;
-  }
-
-  h2 {
-    margin: 0.5rem;
-    color: hsl(211, 39%, 23%);
-    font-size: 1.8rem;
-    font-weight: 700;
-  }
-
-  img {
-    display: block;
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-  }
-
-  svg {
-    background-color: hsl(210, 36%, 96%);
-    border-radius: 5px;
-    padding: 0.25rem;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    height: 3rem;
-    width: 3rem;
-
-    .primary {
-      fill: hsl(210, 22%, 49%);
-    }
-
-    .secondary {
-      fill: hsl(209, 34%, 30%);
-    }
-  }
-
-  div {
-    display: flex;
-    justify-content: space-between;
-    padding: 1.5rem 0.75rem;
-  }
-`;
+import { Button } from "./shared.styles";
+import { EventListContainer, Title, EventGrid, EventCard } from "./Home.styles";
 
 function Home() {
   const { events, participate, remove } = useEvent();
@@ -121,9 +32,7 @@ function Home() {
             >
               <span>{moment(event.date).fromNow()}</span>
               {isAuthenticated && event.createdBy === user._id && (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
+                <IconDelete
                   onClick={e => {
                     e.stopPropagation();
                     if (
@@ -134,16 +43,7 @@ function Home() {
                       remove(event._id);
                     }
                   }}
-                >
-                  <path
-                    className="primary"
-                    d="M5 5h14l-.89 15.12a2 2 0 0 1-2 1.88H7.9a2 2 0 0 1-2-1.88L5 5zm5 5a1 1 0 0 0-1 1v6a1 1 0 0 0 2 0v-6a1 1 0 0 0-1-1zm4 0a1 1 0 0 0-1 1v6a1 1 0 0 0 2 0v-6a1 1 0 0 0-1-1z"
-                  />
-                  <path
-                    className="secondary"
-                    d="M8.59 4l1.7-1.7A1 1 0 0 1 11 2h2a1 1 0 0 1 .7.3L15.42 4H19a1 1 0 0 1 0 2H5a1 1 0 1 1 0-2h3.59z"
-                  />
-                </svg>
+                />
               )}
               <img src={event.image} alt={event.title} />
               <div>

@@ -1,6 +1,5 @@
 import React from "react";
 import { Router } from "@reach/router";
-import styled from "styled-components";
 
 import { useAuth } from "./AuthProvider";
 
@@ -11,11 +10,7 @@ import Header from "./Header";
 import Home from "./Home";
 import NotFound from "./NotFound";
 
-const Container = styled.div`
-  padding: 2rem;
-  max-width: 1000px;
-  margin: 0 auto;
-`;
+import { Container } from "./App.styles";
 
 function App() {
   const { isAuthenticated } = useAuth();

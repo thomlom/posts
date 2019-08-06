@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { navigate } from "@reach/router";
-import styled from "styled-components";
 import Datetime from "react-datetime";
 
 import "./styles/datetime.css";
@@ -17,29 +16,18 @@ import {
   Input,
   Textarea,
 } from "./shared.styles";
-
-const FormContainer = styled.div`
-  max-width: 600px;
-  margin: 0 auto;
-`;
-
-const PreviewImage = styled.img`
-  display: block;
-  border-radius: 5px;
-  margin-top: 1rem;
-  max-height: 300px;
-  object-fit: cover;
-`;
+import { FormContainer, PreviewImage } from "./CreateEvent.styles";
 
 function CreateEvent() {
   const { create } = useEvent();
 
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
     image: "",
+    title: "",
     date: null,
+    address: "",
+    description: "",
   });
   const [isUploading, setIsUploading] = useState(false);
 
@@ -80,10 +68,10 @@ function CreateEvent() {
   async function submitEventForm(e) {
     e.preventDefault();
 
-    const { title, description, image, date } = formData;
+    const { image, title, date } = formData;
 
-    if (!title || !description || !image || !date) {
-      setError("Title, description, image and date are required.");
+    if (!image || !title || !date) {
+      setError("Image, title and date and description are required.");
       return;
     }
 
@@ -100,7 +88,7 @@ function CreateEvent() {
       <Form onSubmit={submitEventForm}>
         {error && <FormError>{error}</FormError>}
         <FormInput>
-          <Label htmlFor="image">Image</Label>
+          <Label htmlFor="image">Image*</Label>
           <Input type="file" name="file" onChange={uploadFile} />
           {isUploading && <span>Uploading...</span>}
           {formData.image && (
@@ -108,11 +96,24 @@ function CreateEvent() {
           )}
         </FormInput>
         <FormInput>
-          <Label htmlFor="title">Title</Label>
+          <Label htmlFor="title">Title*</Label>
           <Input
             type="text"
             name="title"
             value={formData.title}
+            onChange={handleFormChange}
+          />
+        </FormInput>
+        <FormInput>
+          <Label htmlFor="date">Date*</Label>
+          <Datetime onChange={handleDateChange} dateFormat="Do MMMM YYYY" />
+        </FormInput>
+        <FormInput>
+          <Label htmlFor="address">Address</Label>
+          <Input
+            type="text"
+            name="address"
+            value={formData.address}
             onChange={handleFormChange}
           />
         </FormInput>
@@ -125,10 +126,6 @@ function CreateEvent() {
             onChange={handleFormChange}
             rows={5}
           />
-        </FormInput>
-        <FormInput>
-          <Label htmlFor="date">Date</Label>
-          <Datetime onChange={handleDateChange} />
         </FormInput>
         <FormButton type="submit" disabled={isUploading}>
           Create
