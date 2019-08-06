@@ -61,7 +61,7 @@ export const StyledNav = styled.nav`
   }
 
   @media screen and (max-width: 480px) {
-    display: flex;
+    display: ${props => (props.isMenuOpen ? "flex" : "none")};
     flex-direction: column;
 
     button {

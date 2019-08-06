@@ -8,35 +8,10 @@ import IconClose from "./IconClose";
 import IconMenu from "./IconMenu";
 import { NavButton, StyledHeader, Title, StyledNav } from "./Header.styles";
 
-function Nav() {
+function Header() {
   const { isAuthenticated, signout } = useAuth();
   const { openDialog } = useDialog();
-
-  return (
-    <StyledNav>
-      {isAuthenticated ? (
-        <>
-          <Link to="/create">
-            <NavButton>Add new event</NavButton>
-          </Link>
-          <NavButton
-            onClick={() => {
-              signout();
-              navigate("/");
-            }}
-          >
-            Sign Out
-          </NavButton>
-        </>
-      ) : (
-        <NavButton onClick={openDialog}>Sign In</NavButton>
-      )}
-    </StyledNav>
-  );
-}
-
-function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(isOpen => !isOpen);
 
   return (
@@ -51,7 +26,25 @@ function Header() {
           <IconMenu onClick={toggleMenu} />
         )}
       </div>
-      {isMenuOpen && <Nav />}
+      <StyledNav isMenuOpen={isMenuOpen}>
+        {isAuthenticated ? (
+          <>
+            <Link to="/create">
+              <NavButton>Add new event</NavButton>
+            </Link>
+            <NavButton
+              onClick={() => {
+                signout();
+                navigate("/");
+              }}
+            >
+              Sign Out
+            </NavButton>
+          </>
+        ) : (
+          <NavButton onClick={openDialog}>Sign In</NavButton>
+        )}
+      </StyledNav>
     </StyledHeader>
   );
 }
