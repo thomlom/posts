@@ -1,20 +1,36 @@
 import styled from "styled-components";
 
-export const EventListContainer = styled.div`
-  &:not(:first-child) {
-    margin-top: 4rem;
-  }
+export const FilterButtons = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
-export const Title = styled.h2`
-  text-transform: uppercase;
-  font-size: 2rem;
-  letter-spacing: 0.05em;
-  font-weight: 700;
-  color: hsl(210, 22%, 49%);
+export const FilterButton = styled.button`
+  &:first-of-type {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
 
-  span {
-    color: hsl(211, 39%, 23%);
+  &:last-of-type {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 1.25rem 3rem;
+  border: none;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  background-color: ${props =>
+    props.active ? "hsl(211, 39%, 23%)" : "hsl(210, 36%, 96%)"};
+  color: ${props =>
+    props.active ? "hsl(210, 36%, 96%)" : "hsl(211, 39%, 23%)"};
+  cursor: pointer;
+
+  @media (max-width: 480px) {
+    padding: 0.5rem 1.5rem;
+  }
+  &:focus {
+    outline: none;
   }
 `;
 
@@ -25,6 +41,7 @@ export const EventGrid = styled.ul`
   list-style: none;
   margin: 0;
   padding: 0;
+  margin-top: 1.5rem;
 `;
 
 export const EventCard = styled.li`

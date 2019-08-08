@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { navigate } from "@reach/router";
 import moment from "moment";
 
@@ -9,17 +9,69 @@ import { useEvent } from "./EventProvider";
 import IconDelete from "./IconDelete";
 
 import { Button } from "./shared.styles";
-import { EventListContainer, Title, EventGrid, EventCard } from "./Home.styles";
+import {
+  FilterButtons,
+  FilterButton,
+  EventGrid,
+  EventCard,
+} from "./Home.styles";
+
+const ALL = "All";
+const INVOLVED = "Involved";
+const UPCOMING = "Upcoming";
+const PAST = "Past";
 
 function Home() {
   const { events, participate, remove } = useEvent();
   const { isAuthenticated, user } = useAuth();
   const { openDialog } = useDialog();
 
-  function getEventsList(events) {
-    return (
+  const [activeFilter, setActiveFilter] = useState(ALL);
+  const [filteredEvents, setFilteredEvents] = useState(events);
+
+  const filters = [ALL, INVOLVED, UPCOMING, PAST];
+
+  const isInvolved = event =>
+    event.participants.some(participant => participant._id === user._id);
+
+  function filterEvents(filter) {
+    if (filter === ALL) {
+      setFilteredEvents(events);
+    }
+
+    if (filter === INVOLVED) {
+      setFilteredEvents(events.filter(isInvolved));
+    }
+
+    if (filter === UPCOMING) {
+      setFilteredEvents(
+        events.filter(event => moment(event.date).isAfter(Date.now()))
+      );
+    }
+
+    if (filter === PAST) {
+      setFilteredEvents(
+        events.filter(event => moment(event.date).isBefore(Date.now()))
+      );
+    }
+
+    setActiveFilter(filter);
+  }
+
+  return (
+    <>
+      <FilterButtons>
+        {filters.map(filter => (
+          <FilterButton
+            active={filter === activeFilter}
+            onClick={() => filterEvents(filter)}
+          >
+            {filter}
+          </FilterButton>
+        ))}
+      </FilterButtons>
       <EventGrid>
-        {events.map(event => {
+        {filteredEvents.map(event => {
           return (
             <EventCard
               key={event._id}
@@ -51,19 +103,13 @@ function Home() {
                 {isAuthenticated ? (
                   <Button
                     small
-                    secondary={event.participants.some(
-                      participant => participant._id === user._id
-                    )}
+                    secondary={isInvolved(event)}
                     onClick={e => {
                       e.stopPropagation();
                       participate(event._id);
                     }}
                   >
-                    {event.participants.some(
-                      participant => participant._id === user._id
-                    )
-                      ? "Leave"
-                      : "Join"}
+                    {isInvolved(event) ? "Leave" : "Join"}
                   </Button>
                 ) : (
                   <Button
@@ -81,34 +127,6 @@ function Home() {
           );
         })}
       </EventGrid>
-    );
-  }
-
-  const [upcomingEvents, pastEvents] = events.reduce(
-    (acc, event) => {
-      if (moment(event.date).isAfter(Date.now())) {
-        return [[...acc[0], event], [...acc[1]]];
-      } else {
-        return [[...acc[0]], [...acc[1], event]];
-      }
-    },
-    [[], []]
-  );
-
-  return (
-    <>
-      <EventListContainer>
-        <Title>
-          <span>Upcoming</span> Events
-        </Title>
-        {getEventsList(upcomingEvents)}
-      </EventListContainer>
-      <EventListContainer>
-        <Title>
-          <span>Past</span> Events
-        </Title>
-        {getEventsList(pastEvents)}
-      </EventListContainer>
     </>
   );
 }
