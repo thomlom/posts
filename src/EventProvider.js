@@ -8,6 +8,8 @@ import React, {
 
 import callApi from "./services/callApi";
 
+import Loading from "./Loading";
+
 const EventContext = createContext();
 
 function eventReducer(events, action) {
@@ -108,7 +110,7 @@ function EventProvider({ children }) {
   }, []);
 
   if (isFetchingEvents) {
-    return <div>Loading</div>;
+    return <Loading />;
   }
 
   return (

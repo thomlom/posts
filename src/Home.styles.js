@@ -107,3 +107,22 @@ export const EventCard = styled.li`
     padding: 1.5rem 0.75rem;
   }
 `;
+
+export const NoEvents = styled.div`
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    max-width: 30rem;
+  }
+
+  p {
+    color: hsl(209, 34%, 30%);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-top: 2rem;
+  }
+`;

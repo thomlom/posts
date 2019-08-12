@@ -8,12 +8,15 @@ import { useEvent } from "./EventProvider";
 
 import IconDelete from "./IconDelete";
 
+import empty from "./assets/empty.svg";
+
 import { Button } from "./shared.styles";
 import {
   FilterButtons,
   FilterButton,
   EventGrid,
   EventCard,
+  NoEvents,
 } from "./Home.styles";
 
 const ALL = "All";
@@ -29,7 +32,7 @@ function Home() {
   const [activeFilter, setActiveFilter] = useState(ALL);
   const [filteredEvents, setFilteredEvents] = useState(events);
 
-  const filters = [ALL, INVOLVED, UPCOMING, PAST];
+  const filters = [ALL, UPCOMING, PAST, ...(isAuthenticated ? [INVOLVED] : [])];
 
   const isInvolved = event =>
     event.participants.some(participant => participant._id === user._id);
@@ -63,6 +66,7 @@ function Home() {
       <FilterButtons>
         {filters.map(filter => (
           <FilterButton
+            key={filter}
             active={filter === activeFilter}
             onClick={() => filterEvents(filter)}
           >
@@ -71,61 +75,71 @@ function Home() {
         ))}
       </FilterButtons>
       <EventGrid>
-        {filteredEvents.map(event => {
-          return (
-            <EventCard
-              key={event._id}
-              onClick={e => {
-                e.preventDefault();
-                isAuthenticated
-                  ? navigate(`/event/${event._id}`)
-                  : openDialog();
-              }}
-            >
-              <span>{moment(event.date).fromNow()}</span>
-              {isAuthenticated && event.createdBy === user._id && (
-                <IconDelete
-                  onClick={e => {
-                    e.stopPropagation();
-                    if (
-                      window.confirm(
-                        "Are you sure you want to delete this event?"
-                      )
-                    ) {
-                      remove(event._id);
-                    }
-                  }}
-                />
-              )}
-              <img src={event.image} alt={event.title} />
-              <div>
-                <h2>{event.title}</h2>
-                {isAuthenticated ? (
-                  <Button
-                    small
-                    secondary={isInvolved(event)}
+        {filteredEvents.length === 0 ? (
+          <NoEvents>
+            <img
+              src={empty}
+              alt="Illustration of a man carrying an empty box"
+            />
+            <p>No events.</p>
+          </NoEvents>
+        ) : (
+          filteredEvents.map(event => {
+            return (
+              <EventCard
+                key={event._id}
+                onClick={e => {
+                  e.preventDefault();
+                  isAuthenticated
+                    ? navigate(`/event/${event._id}`)
+                    : openDialog();
+                }}
+              >
+                <span>{moment(event.date).fromNow()}</span>
+                {isAuthenticated && event.createdBy === user._id && (
+                  <IconDelete
                     onClick={e => {
                       e.stopPropagation();
-                      participate(event._id);
+                      if (
+                        window.confirm(
+                          "Are you sure you want to delete this event?"
+                        )
+                      ) {
+                        remove(event._id);
+                      }
                     }}
-                  >
-                    {isInvolved(event) ? "Leave" : "Join"}
-                  </Button>
-                ) : (
-                  <Button
-                    small
-                    onClick={e => {
-                      e.stopPropagation();
-                      openDialog();
-                    }}
-                  >
-                    Join
-                  </Button>
+                  />
                 )}
-              </div>
-            </EventCard>
-          );
-        })}
+                <img src={event.image} alt={event.title} />
+                <div>
+                  <h2>{event.title}</h2>
+                  {isAuthenticated ? (
+                    <Button
+                      small
+                      secondary={isInvolved(event)}
+                      onClick={e => {
+                        e.stopPropagation();
+                        participate(event._id);
+                      }}
+                    >
+                      {isInvolved(event) ? "Leave" : "Join"}
+                    </Button>
+                  ) : (
+                    <Button
+                      small
+                      onClick={e => {
+                        e.stopPropagation();
+                        openDialog();
+                      }}
+                    >
+                      Join
+                    </Button>
+                  )}
+                </div>
+              </EventCard>
+            );
+          })
+        )}
       </EventGrid>
     </>
   );

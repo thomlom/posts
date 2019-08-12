@@ -2,6 +2,8 @@ import React, { useState, useEffect, createContext, useContext } from "react";
 
 import callApi, { TOKEN_NAME } from "./services/callApi";
 
+import Loading from "./Loading";
+
 const AuthContext = createContext();
 
 function AuthProvider({ children }) {
@@ -50,7 +52,7 @@ function AuthProvider({ children }) {
   }, []);
 
   if (isFetchingUser) {
-    return <div>Loading</div>;
+    return <Loading />;
   }
 
   return (
