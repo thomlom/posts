@@ -24,18 +24,15 @@ const INVOLVED = "Involved";
 const UPCOMING = "Upcoming";
 const PAST = "Past";
 
+const isInvolved = (event, user) =>
+  event.participants.some(participant => participant._id === user._id);
+
 function Home() {
   const { events, participate, remove } = useEvent();
   const { isAuthenticated, user } = useAuth();
   const { openDialog } = useDialog();
 
   const [activeFilter, setActiveFilter] = useState(ALL);
-
-  const isInvolved = useCallback(
-    event =>
-      event.participants.some(participant => participant._id === user._id),
-    [user._id]
-  );
 
   const filters = [ALL, UPCOMING, PAST, ...(isAuthenticated ? [INVOLVED] : [])];
 
@@ -45,7 +42,7 @@ function Home() {
     }
 
     if (activeFilter === INVOLVED) {
-      return events.filter(isInvolved);
+      return events.filter(event => isInvolved(event, user));
     }
 
     if (activeFilter === UPCOMING) {
@@ -57,7 +54,7 @@ function Home() {
     }
 
     return events;
-  }, [activeFilter, events, isInvolved]);
+  }, [activeFilter, events, user]);
 
   return (
     <>
@@ -114,13 +111,13 @@ function Home() {
                   {isAuthenticated ? (
                     <Button
                       small
-                      secondary={isInvolved(event)}
+                      secondary={isInvolved(event, user)}
                       onClick={e => {
                         e.stopPropagation();
                         participate(event._id);
                       }}
                     >
-                      {isInvolved(event) ? "Leave" : "Join"}
+                      {isInvolved(event, user) ? "Leave" : "Join"}
                     </Button>
                   ) : (
                     <Button
