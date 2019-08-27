@@ -56,18 +56,6 @@ function EventProvider({ children }) {
     dispatch({ type: "PARTICIPATE", payload: { eventId, updatedEvent } });
   }
 
-  async function create(formData) {
-    const {
-      data: { data: newEvent },
-    } = await callApi("/event", {
-      method: "POST",
-      data: formData,
-    });
-
-    dispatch({ type: "ADD", payload: newEvent });
-    return newEvent;
-  }
-
   async function remove(id) {
     const {
       data: { data: removedEvent },
@@ -76,23 +64,6 @@ function EventProvider({ children }) {
     });
 
     dispatch({ type: "REMOVE", payload: { eventId: removedEvent._id } });
-  }
-
-  async function removeParticipant(eventId, participantId) {
-    const {
-      data: { data: updatedEvent },
-    } = await callApi(`/event/participants`, {
-      method: "DELETE",
-      data: {
-        eventId,
-        participantId,
-      },
-    });
-
-    dispatch({
-      type: "REMOVE_PARTICIPANT",
-      payload: { eventId, updatedEvent },
-    });
   }
 
   useEffect(() => {
@@ -114,9 +85,7 @@ function EventProvider({ children }) {
   }
 
   return (
-    <EventContext.Provider
-      value={{ events, create, participate, remove, removeParticipant }}
-    >
+    <EventContext.Provider value={{ events, dispatch, participate, remove }}>
       {children}
     </EventContext.Provider>
   );

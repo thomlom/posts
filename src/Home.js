@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { navigate } from "@reach/router";
 import moment from "moment";
 
@@ -30,36 +30,34 @@ function Home() {
   const { openDialog } = useDialog();
 
   const [activeFilter, setActiveFilter] = useState(ALL);
-  const [filteredEvents, setFilteredEvents] = useState(events);
+
+  const isInvolved = useCallback(
+    event =>
+      event.participants.some(participant => participant._id === user._id),
+    [user._id]
+  );
 
   const filters = [ALL, UPCOMING, PAST, ...(isAuthenticated ? [INVOLVED] : [])];
 
-  const isInvolved = event =>
-    event.participants.some(participant => participant._id === user._id);
-
-  function filterEvents(filter) {
-    if (filter === ALL) {
-      setFilteredEvents(events);
+  const filteredEvents = useMemo(() => {
+    if (activeFilter === ALL) {
+      return events;
     }
 
-    if (filter === INVOLVED) {
-      setFilteredEvents(events.filter(isInvolved));
+    if (activeFilter === INVOLVED) {
+      return events.filter(isInvolved);
     }
 
-    if (filter === UPCOMING) {
-      setFilteredEvents(
-        events.filter(event => moment(event.date).isAfter(Date.now()))
-      );
+    if (activeFilter === UPCOMING) {
+      return events.filter(event => moment(event.date).isAfter(Date.now()));
     }
 
-    if (filter === PAST) {
-      setFilteredEvents(
-        events.filter(event => moment(event.date).isBefore(Date.now()))
-      );
+    if (activeFilter === PAST) {
+      return events.filter(event => moment(event.date).isBefore(Date.now()));
     }
 
-    setActiveFilter(filter);
-  }
+    return events;
+  }, [activeFilter, events, isInvolved]);
 
   return (
     <>
@@ -68,7 +66,7 @@ function Home() {
           <FilterButton
             key={filter}
             active={filter === activeFilter}
-            onClick={() => filterEvents(filter)}
+            onClick={() => setActiveFilter(filter)}
           >
             {filter}
           </FilterButton>

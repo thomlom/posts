@@ -3,6 +3,8 @@ import axios from "axios";
 import { navigate } from "@reach/router";
 import Datetime from "react-datetime";
 
+import callApi from "./services/callApi";
+
 import "./styles/datetime.css";
 
 import { useEvent } from "./EventProvider";
@@ -19,7 +21,7 @@ import {
 import { FormContainer, PreviewImage } from "./CreateEvent.styles";
 
 function CreateEvent() {
-  const { create } = useEvent();
+  const { dispatch } = useEvent();
 
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
@@ -76,7 +78,13 @@ function CreateEvent() {
     }
 
     try {
-      const newEvent = await create(formData);
+      const {
+        data: { data: newEvent },
+      } = await callApi("/event", {
+        method: "POST",
+        data: formData,
+      });
+      dispatch({ type: "ADD", payload: newEvent });
       navigate(`/event/${newEvent._id}`);
     } catch ({ response: { data } }) {
       setError(data);

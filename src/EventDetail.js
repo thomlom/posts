@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { navigate } from "@reach/router";
 import moment from "moment";
 
+import callApi from "./services/callApi";
+
 import { useAuth } from "./AuthProvider";
 import { useEvent } from "./EventProvider";
 
@@ -23,7 +25,7 @@ import {
 const EventDetail = ({ eventId }) => {
   const [showParticipants, setShowParticipants] = useState(false);
   const { user } = useAuth();
-  const { events, participate, remove, removeParticipant } = useEvent();
+  const { events, participate, remove, dispatch } = useEvent();
 
   const event = events.find(event => {
     return event._id === eventId;
@@ -32,6 +34,23 @@ const EventDetail = ({ eventId }) => {
   if (!event) {
     return <div>No event for {eventId}</div>;
   }
+
+  const removeParticipant = async (eventId, participantId) => {
+    const {
+      data: { data: updatedEvent },
+    } = await callApi(`/event/participants`, {
+      method: "DELETE",
+      data: {
+        eventId,
+        participantId,
+      },
+    });
+
+    dispatch({
+      type: "REMOVE_PARTICIPANT",
+      payload: { eventId, updatedEvent },
+    });
+  };
 
   const removeEvent = () => {
     if (window.confirm("Are you sure you want to delete this event?")) {
@@ -106,9 +125,9 @@ const EventDetail = ({ eventId }) => {
                   <p>{participant.name}</p>
                   <Button
                     small
-                    onClick={() => {
-                      removeParticipant(event._id, participant._id);
-                    }}
+                    onClick={() =>
+                      removeParticipant(event._id, participant._id)
+                    }
                   >
                     Remove
                   </Button>
