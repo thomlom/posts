@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from "react";
 import { navigate } from "@reach/router";
-import moment from "moment";
+import { formatDistanceToNow, isAfter, isBefore } from "date-fns";
 
 import { useAuth } from "./AuthProvider";
 import { useDialog } from "./DialogProvider";
@@ -49,11 +49,11 @@ function Home() {
     }
 
     if (activeFilter === UPCOMING) {
-      return events.filter(event => moment(event.date).isAfter(Date.now()));
+      return events.filter(event => isAfter(new Date(event.date), Date.now()));
     }
 
     if (activeFilter === PAST) {
-      return events.filter(event => moment(event.date).isBefore(Date.now()));
+      return events.filter(event => isBefore(new Date(event.date), Date.now()));
     }
 
     return events;
@@ -93,7 +93,7 @@ function Home() {
                     : openDialog();
                 }}
               >
-                <span>{moment(event.date).fromNow()}</span>
+                <span>{formatDistanceToNow(new Date(event.date))}</span>
                 {isAuthenticated && event.createdBy === user._id && (
                   <IconDelete
                     onClick={e => {

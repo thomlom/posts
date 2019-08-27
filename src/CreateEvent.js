@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { navigate } from "@reach/router";
-import Datetime from "react-datetime";
+
+import "flatpickr/dist/themes/light.css";
+import flatpickr from "flatpickr";
 
 import callApi from "./services/callApi";
-
-import "./styles/datetime.css";
 
 import { useEvent } from "./EventProvider";
 
@@ -33,6 +33,24 @@ function CreateEvent() {
   });
   const [isUploading, setIsUploading] = useState(false);
 
+  const inputRef = useCallback(node => {
+    if (node !== null) {
+      const now = new Date();
+      flatpickr(node, {
+        defaultDate: now,
+        minDate: now,
+        dateFormat: "F j, Y H:i",
+        enableTime: true,
+        time_24hr: true,
+        onChange: ([date]) =>
+          setFormData(formData => ({
+            ...formData,
+            date,
+          })),
+      });
+    }
+  }, []);
+
   async function uploadFile(e) {
     setIsUploading(true);
     const files = e.target.files;
@@ -57,13 +75,6 @@ function CreateEvent() {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    });
-  }
-
-  function handleDateChange(momentInstance) {
-    setFormData({
-      ...formData,
-      date: momentInstance.toDate(),
     });
   }
 
@@ -114,11 +125,7 @@ function CreateEvent() {
         </FormInput>
         <FormInput>
           <Label htmlFor="date">Date*</Label>
-          <Datetime
-            onChange={handleDateChange}
-            dateFormat="Do MMMM YYYY"
-            input={false}
-          />
+          <Input ref={inputRef} />
         </FormInput>
         <FormInput>
           <Label htmlFor="address">Address</Label>

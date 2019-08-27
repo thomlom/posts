@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { navigate } from "@reach/router";
-import moment from "moment";
+import { format } from "date-fns";
 
 import callApi from "./services/callApi";
 
@@ -102,7 +102,7 @@ const EventDetail = ({ eventId }) => {
         )}
         <Info>
           <IconCalendar />
-          <span>{moment(date).format("MMMM DD, YYYY | hh:mm A")}</span>
+          <span>{format(new Date(date), "MMMM dd, yyyy | hh:mm")}</span>
         </Info>
         {address && (
           <Info>
