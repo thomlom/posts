@@ -49,6 +49,7 @@ function Signup({ signup, closeDialog }) {
         <Label htmlFor="email">Email</Label>
         <Input
           type="email"
+          id="email"
           name="email"
           value={formData.email}
           onChange={handleFormChange}
@@ -58,6 +59,7 @@ function Signup({ signup, closeDialog }) {
         <Label htmlFor="name">Name</Label>
         <Input
           type="text"
+          id="name"
           name="name"
           value={formData.name}
           onChange={handleFormChange}
@@ -67,6 +69,7 @@ function Signup({ signup, closeDialog }) {
         <Label htmlFor="password">Password</Label>
         <Input
           type="password"
+          id="password"
           name="password"
           value={formData.password}
           onChange={handleFormChange}

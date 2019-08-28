@@ -17,6 +17,7 @@ const IconClose = ({ onClick }) => {
       xmlns="http://www.w3.org/2000/Icon"
       viewBox="0 0 24 24"
       className="icon-close"
+      data-testid="close"
       onClick={onClick}
     >
       <path

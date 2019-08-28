@@ -6,7 +6,7 @@ import Loading from "./Loading";
 
 const AuthContext = createContext();
 
-function AuthProvider({ children }) {
+function AuthProvider(props) {
   const [isFetchingUser, setIsFetchingUser] = useState(true);
   const [user, setUser] = useState(null);
 
@@ -64,9 +64,8 @@ function AuthProvider({ children }) {
         signin,
         signout,
       }}
-    >
-      {children}
-    </AuthContext.Provider>
+      {...props}
+    />
   );
 }
 

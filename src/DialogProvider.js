@@ -2,21 +2,16 @@ import React, { useState, useContext, createContext } from "react";
 
 const DialogContext = createContext();
 
-function DialogProvider({ children }) {
+function DialogProvider(props) {
   const [isOpen, setOpen] = useState(false);
-
-  function openDialog() {
-    setOpen(true);
-  }
-
-  function closeDialog() {
-    setOpen(false);
-  }
+  const openDialog = () => setOpen(true);
+  const closeDialog = () => setOpen(false);
 
   return (
-    <DialogContext.Provider value={{ isOpen, openDialog, closeDialog }}>
-      {children}
-    </DialogContext.Provider>
+    <DialogContext.Provider
+      value={{ isOpen, openDialog, closeDialog }}
+      {...props}
+    />
   );
 }
 
