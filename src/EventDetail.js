@@ -55,8 +55,8 @@ const EventDetail = ({ eventId }) => {
   const removeEvent = () => {
     if (window.confirm("Are you sure you want to delete this event?")) {
       remove(event._id);
-      navigate("/");
     }
+    navigate("/");
   };
 
   const { image, title, date, address, description, participants } = event;
