@@ -7,8 +7,8 @@ export const FormContainer = styled.div`
 
 export const PreviewImage = styled.img`
   display: block;
-  border-radius: 5px;
-  margin-top: 1rem;
+  border-radius: var(--small-radius);
+  margin-top: var(--m-2);
   max-height: 300px;
   object-fit: cover;
 `;

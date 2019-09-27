@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 
+import { useAuth } from "./AuthProvider";
 import {
-  Form,
   FormButton,
   FormError,
   FormInput,
@@ -10,40 +10,38 @@ import {
   Input,
 } from "./shared.styles";
 
-function Signup({ signup, closeDialog }) {
-  const [error, setError] = useState("");
-  const [formData, setFormData] = useState({
+function Signup({ history }) {
+  const { signup } = useAuth();
+  const [error, setError] = React.useState("");
+  const [formData, setFormData] = React.useReducer((s, a) => ({ ...s, ...a }), {
     email: "",
-    password: "",
     name: "",
+    password: "",
   });
 
   function handleFormChange(e) {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ [e.target.name]: e.target.value });
   }
 
   async function submitSignForm(e) {
     e.preventDefault();
 
-    if (!formData.email || !formData.password || !formData.name) {
-      setError("Password, email and name are required.");
+    if (!formData.email || !formData.password) {
+      setError("Password and email are required.");
       return;
     }
 
     try {
       await signup(formData);
-      closeDialog();
+      history.push("/");
     } catch ({ response: { data } }) {
       setError(data);
     }
   }
 
   return (
-    <Form onSubmit={submitSignForm}>
-      <FormTitle>Welcome!</FormTitle>
+    <form onSubmit={submitSignForm}>
+      <FormTitle>Welcome.</FormTitle>
       {error && <FormError>{error}</FormError>}
       <FormInput>
         <Label htmlFor="email">Email</Label>
@@ -76,7 +74,7 @@ function Signup({ signup, closeDialog }) {
         />
       </FormInput>
       <FormButton type="submit">Sign Up</FormButton>
-    </Form>
+    </form>
   );
 }
 

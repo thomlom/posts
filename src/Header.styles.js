@@ -5,21 +5,21 @@ import { Button } from "./shared.styles";
 export const NavButton = styled(Button)`
   background-color: transparent;
   border: none;
-  color: hsl(209, 34%, 30%);
   box-shadow: none;
 
-  @media (max-width: 480px) {
-    background-color: hsl(210, 36%, 96%);
-  }
+  color: var(--grey-700);
 
   &:hover {
-    background-color: hsl(210, 36%, 96%);
+    background-color: var(--grey-200);
+  }
+
+  &:focus {
+    outline: none;
   }
 `;
 
 export const StyledHeader = styled.header`
-  padding: 0.75rem 1.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  margin-bottom: var(--m-2);
 
   @media screen and (min-width: 480px) {
     display: flex;
@@ -34,12 +34,12 @@ export const StyledHeader = styled.header`
   }
 
   svg {
-    width: 4rem;
-    height: 4rem;
+    width: 50px;
+    height: 50px;
     cursor: pointer;
 
     .secondary {
-      fill: hsl(209, 34%, 30%);
+      fill: var(--grey-700);
     }
 
     @media screen and (min-width: 480px) {
@@ -49,15 +49,17 @@ export const StyledHeader = styled.header`
 `;
 
 export const Title = styled.h1`
-  color: hsl(209, 34%, 30%);
+  color: var(--grey-800);
+  font-size: var(--text-4xl);
+  font-weight: 900;
   text-transform: uppercase;
-  font-size: 2.4rem;
   text-decoration: none;
 `;
 
 export const StyledNav = styled.nav`
-  button:not(:first-child) {
-    margin-left: 1rem;
+  button:not(:first-child),
+  a:not(:first-child) {
+    margin-left: var(--m-2);
   }
 
   @media screen and (max-width: 480px) {
@@ -70,8 +72,9 @@ export const StyledNav = styled.nav`
       text-align: left;
     }
 
+    a:not(:first-child),
     button:not(:first-child) {
-      margin-top: 1rem;
+      margin-top: var(--m-2);
       margin-left: 0;
     }
   }

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { navigate, Link } from "@reach/router";
+import { Link } from "react-router-dom";
 
 import { useAuth } from "./AuthProvider";
-import { useDialog } from "./DialogProvider";
 
 import IconClose from "./IconClose";
 import IconMenu from "./IconMenu";
@@ -10,7 +9,6 @@ import { NavButton, StyledHeader, Title, StyledNav } from "./Header.styles";
 
 function Header() {
   const { isAuthenticated, signout } = useAuth();
-  const { openDialog } = useDialog();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(isOpen => !isOpen);
 
@@ -18,7 +16,7 @@ function Header() {
     <StyledHeader>
       <div>
         <Link to="/" style={{ textDecoration: "none" }}>
-          <Title>Events</Title>
+          <Title>Posts</Title>
         </Link>
         {isMenuOpen ? (
           <IconClose onClick={toggleMenu} />
@@ -27,22 +25,25 @@ function Header() {
         )}
       </div>
       <StyledNav isMenuOpen={isMenuOpen}>
+        <Link to="/">
+          <NavButton>All Posts</NavButton>
+        </Link>
         {isAuthenticated ? (
           <>
             <Link to="/create">
-              <NavButton>Add new event</NavButton>
+              <NavButton>New post</NavButton>
             </Link>
-            <NavButton
-              onClick={() => {
-                signout();
-                navigate("/");
-              }}
-            >
-              Sign Out
-            </NavButton>
+            <NavButton onClick={() => signout()}>Sign Out</NavButton>
           </>
         ) : (
-          <NavButton onClick={openDialog}>Sign In</NavButton>
+          <>
+            <Link to="/signin">
+              <NavButton>Sign In</NavButton>
+            </Link>
+            <Link to="/signup">
+              <NavButton>Sign Up</NavButton>
+            </Link>
+          </>
         )}
       </StyledNav>
     </StyledHeader>

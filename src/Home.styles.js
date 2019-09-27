@@ -1,128 +1,92 @@
 import styled from "styled-components";
 
-export const FilterButtons = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-export const FilterButton = styled.button`
-  &:first-of-type {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-  }
-
-  &:last-of-type {
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-  }
-  font-size: 1.4rem;
-  font-weight: 700;
-  padding: 1.25rem 3rem;
-  border: none;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  background-color: ${props =>
-    props.active ? "hsl(211, 39%, 23%)" : "hsl(210, 36%, 96%)"};
-  color: ${props =>
-    props.active ? "hsl(210, 36%, 96%)" : "hsl(211, 39%, 23%)"};
-  cursor: pointer;
-
-  @media (max-width: 480px) {
-    padding: 0.5rem 1.5rem;
-  }
-  &:focus {
-    outline: none;
-  }
-`;
-
-export const EventGrid = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
-  grid-gap: 2.5rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  margin-top: 1.5rem;
-`;
-
-export const EventCard = styled.li`
+export const PostCard = styled.li`
   display: flex;
   flex-direction: column;
-  background-color: hsl(210, 36%, 96%);
-  border-radius: 5px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background-color: var(--grey-200);
+  border-radius: var(--small-radius);
+  box-shadow: var(--shadow-medium);
   cursor: pointer;
   position: relative;
+
+  &:not(:first-of-type) {
+    margin-top: var(--m-5);
+  }
 
   span {
     position: absolute;
     top: 5px;
     left: 5px;
-    background-color: hsl(210, 36%, 96%);
-    color: hsl(209, 34%, 30%);
+    background-color: var(--grey-200);
+    color: var(--grey-700);
     padding: 0.75rem;
-    border-radius: 5px;
-    font-size: 1.2rem;
-    font-weight: 700;
-  }
-
-  h2 {
-    margin: 0.5rem;
-    color: hsl(211, 39%, 23%);
-    font-size: 1.8rem;
+    border-radius: var(--small-radius);
+    font-size: var(--text-sm);
     font-weight: 700;
   }
 
   img {
     display: block;
     width: 100%;
-    height: 300px;
+    max-height: 300px;
     object-fit: cover;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    border-top-left-radius: var(--small-radius);
+    border-top-right-radius: var(--small-radius);
   }
 
   svg {
-    background-color: hsl(210, 36%, 96%);
-    border-radius: 5px;
+    background-color: var(--grey-200);
+    border-radius: var(--small-radius);
     padding: 0.25rem;
     position: absolute;
     top: 5px;
     right: 5px;
-    height: 3rem;
-    width: 3rem;
+    height: 30px;
+    width: 30px;
 
     .primary {
-      fill: hsl(210, 22%, 49%);
+      fill: var(--grey-600);
     }
 
     .secondary {
-      fill: hsl(209, 34%, 30%);
+      fill: var(--grey-800);
     }
   }
 
   div {
-    display: flex;
-    justify-content: space-between;
-    padding: 1.5rem 0.75rem;
+    padding: var(--m-3);
+
+    h2 {
+      margin: var(--m-2) 0;
+      color: var(--grey-800);
+      font-size: var(--text-2xl);
+      font-weight: 800;
+    }
+
+    p {
+      margin: var(--m-2) 0;
+      font-size: var(--text-lg);
+      color: var(--grey-600);
+      font-weight: 500;
+    }
   }
 `;
 
-export const NoEvents = styled.div`
-  margin-top: 3rem;
+export const NoPosts = styled.div`
+  margin-top: var(--m-5);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
   img {
-    max-width: 30rem;
+    max-width: 100%;
   }
 
   p {
-    color: hsl(209, 34%, 30%);
-    font-size: 1.8rem;
+    color: var(--grey-700);
+    font-size: var(--text-2xl);
     font-weight: 700;
-    margin-top: 2rem;
+    margin-top: var(--m-5);
   }
 `;

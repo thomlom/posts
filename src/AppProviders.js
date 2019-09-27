@@ -1,15 +1,12 @@
 import React from "react";
 
 import AuthProvider from "./AuthProvider";
-import DialogProvider from "./DialogProvider";
-import EventProvider from "./EventProvider";
+import PostProvider from "./PostProvider";
 
 const AppProviders = ({ children }) => {
   return (
     <AuthProvider>
-      <DialogProvider>
-        <EventProvider>{children}</EventProvider>
-      </DialogProvider>
+      <PostProvider>{children}</PostProvider>
     </AuthProvider>
   );
 };

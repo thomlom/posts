@@ -1,51 +1,28 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const Button = styled.button`
-  font-size: ${props => (props.small ? "1.2rem" : "1.4rem")};
+  font-size: var(--text-lg);
   font-weight: 700;
-  padding: ${props => (props.small ? "0.5rem 1rem" : "0.75rem 1.25rem")};
+  padding: var(--m-3) var(--m-4);
   border: none;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  background-color: ${props =>
-    props.secondary ? "hsl(210, 36%, 96%)" : "hsl(209, 34%, 30%);"};
-  color: ${props =>
-    props.secondary ? "hsl(209, 34%, 30%)" : "hsl(210, 36%, 96%)"};
+  border-radius: var(--small-radius);
+  box-shadow: var(--shadow-small);
+  background-color: var(--grey-800);
+  color: var(--grey-100);
   cursor: pointer;
 `;
 
-export const Form = styled.form`
-  input,
-  textarea {
-    margin-top: 0.8rem;
-  }
-`;
-
-export const FormButton = styled.button`
+export const FormButton = styled(Button)`
   width: 100%;
-  font-size: 1.6rem;
-  font-weight: 700;
-  padding: 1rem 1.5rem;
-  border: none;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  color: hsl(210, 36%, 96%);
-  background-color: hsl(209, 34%, 30%);
-  margin: 2rem 0;
-  cursor: pointer;
-
-  &:disabled {
-    opacity: 0.75;
-    cursor: not-allowed;
-  }
+  margin-top: var(--m-4);
 `;
 
 export const FormError = styled.p`
-  font-size: 1.4rem;
-  font-weight: 600;
+  font-size: var(--text-base);
+  font-weight: 700;
   text-align: center;
-  padding: 1.2rem;
-  border-radius: 5px;
+  padding: var(--m-3);
+  border-radius: var(--small-radius);
   color: hsl(352, 90%, 35%);
   background-color: hsl(360, 100%, 95%);
 `;
@@ -55,71 +32,59 @@ export const FormInput = styled.div`
   flex-direction: column;
 
   label + * {
-    margin-top: 1rem;
+    margin-top: var(--m-2);
+  }
+
+  &:not(:first-of-type) {
+    margin-top: var(--m-4);
   }
 
   span {
-    color: hsl(211, 39%, 23%);
-    margin-top: 1rem;
-    font-size: 1.2rem;
-  }
-
-  &:not(:first-child) {
-    margin-top: 1rem;
+    color: var(--grey-700);
+    margin-top: var(--m-2);
+    font-weight: 500;
+    font-size: var(--text-sm);
   }
 `;
 
 export const FormTitle = styled.h2`
-  font-size: 3rem;
+  font-size: var(--text-4xl);
   font-weight: 700;
-  color: hsl(211, 39%, 23%);
-  margin: 2rem 0;
+  color: var(--grey-800);
+  margin: var(--m-4) 0;
   text-align: center;
 `;
 
 export const Label = styled.label`
   text-transform: uppercase;
-  color: hsl(209, 34%, 30%);
-  font-size: 1.2rem;
+  color: var(--grey-700);
+  font-size: var(--text-sm);
   font-weight: 700;
   letter-spacing: 0.05em;
 `;
 
-export const Input = styled.input`
+const baseInput = css`
   box-sizing: border-box;
-  border: 1px solid hsl(212, 33%, 89%);
-  border-radius: 5px;
-  padding: 1rem 2rem;
+  border: 1px solid var(--grey-400);
+  border-radius: var(--small-radius);
+  padding: var(--m-3) var(--m-4);
   width: 100%;
-  line-height: 1.5;
 
-  font-size: 1.6rem;
-  color: hsl(209, 34%, 30%);
+  font-size: var(--text-base);
+  color: var(--grey-700);
 
   &:focus {
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
     outline: none;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
   }
 `;
 
+export const Input = styled.input`
+  ${baseInput}
+`;
+
 export const Textarea = styled.textarea`
-  box-sizing: border-box;
-  border: 1px solid hsl(212, 33%, 89%);
-  border-radius: 5px;
-  padding: 1rem 2rem;
-  width: 100%;
-  line-height: 1.5;
+  ${baseInput}
 
-  font-size: 1.6rem;
-  color: hsl(209, 34%, 30%);
-
-  &:focus {
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
-    outline: none;
-  }
+  resize: none;
 `;

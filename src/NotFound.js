@@ -1,5 +1,4 @@
 import React from "react";
-import { navigate } from "@reach/router";
 import styled from "styled-components";
 
 import { Button } from "./shared.styles";
@@ -8,16 +7,17 @@ const Container = styled.div`
   text-align: center;
 
   p {
-    font-size: 2.4rem;
-    color: hsl(209, 23%, 60%);
+    font-size: var(--text-2xl);
+    font-weight: 500;
+    color: var(--grey-600);
   }
 `;
 
-function NotFound() {
+function NotFound({ history }) {
   return (
     <Container>
       <p>Oops, there's nothing here!</p>
-      <Button onClick={() => navigate("/")}>Go back home</Button>
+      <Button onClick={() => history.push("/")}>Go back home</Button>
     </Container>
   );
 }
