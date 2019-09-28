@@ -26,8 +26,8 @@ function Signup({ history }) {
   async function submitSignForm(e) {
     e.preventDefault();
 
-    if (!formData.email || !formData.password) {
-      setError("Password and email are required.");
+    if (!formData.email || !formData.password || !formData.name) {
+      setError("Password, email and name are required.");
       return;
     }
 
