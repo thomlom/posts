@@ -38,7 +38,6 @@ const PostDetail = ({
 
   const loggedUserIsCreator = post.createdBy._id === user._id;
 
-  console.log(loggedUserIsCreator);
   return (
     <Container>
       <Image>
