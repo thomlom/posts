@@ -18,15 +18,17 @@ jest.mock("./services/callApi");
 async function render(ui, { posts, userId } = { posts: [], userId: 1 }) {
   callApiMock.mockResolvedValue({ data: { data: posts } });
 
-  const removeMock = jest.fn().mockResolvedValue();
   const utils = rtlRender(
     <AuthProvider value={{ user: { _id: userId } }}>
-      <PostProvider value={{ posts, remove: removeMock }}>{ui}</PostProvider>
+      <PostProvider>{ui}</PostProvider>
     </AuthProvider>
   );
   await wait();
 
-  return { ...utils, userId, removeMock };
+  expect(callApiMock).toHaveBeenCalledWith("/post/all", { method: "GET" });
+  callApiMock.mockClear();
+
+  return { ...utils, userId };
 }
 
 function generatePost(overrides) {
@@ -67,26 +69,35 @@ describe("Home", () => {
 
   test("creator can delete a post", async () => {
     const userId = 1;
+    const creatorName = faker.name.firstName();
     const posts = [
       generatePost(),
       generatePost({
-        createdBy: { _id: userId, name: faker.name.firstName() },
+        createdBy: { _id: userId, name: creatorName },
       }),
-      generatePost(),
     ];
     const confirmMock = jest.fn().mockReturnValue(true);
     window.confirm = confirmMock;
-    const { getByTestId, removeMock } = await render(<Home />, {
+    const { getByTestId } = await render(<Home />, {
       posts,
       userId,
     });
+    callApiMock.mockResolvedValue({ data: { data: { _id: posts[1]._id } } });
     const postOfCreatorUtils = within(getByTestId(`post-${posts[1]._id}`));
+    expect(
+      postOfCreatorUtils.getByText(`Written by ${creatorName}`)
+    ).toBeInTheDocument();
     const deleteIcon = postOfCreatorUtils.getByTestId("delete");
 
     fireEvent.click(deleteIcon);
+    await wait();
 
     expect(window.confirm).toHaveBeenCalledTimes(1);
-    expect(removeMock).toHaveBeenCalledTimes(1);
-    expect(removeMock).toHaveBeenCalledWith(posts[1]._id);
+    expect(callApiMock).toHaveBeenCalledWith(`/post/${posts[1]._id}`, {
+      method: "DELETE",
+    });
+    expect(
+      postOfCreatorUtils.getByText(`Written by ${creatorName}`)
+    ).not.toBeInTheDocument();
   });
 });
