@@ -22,6 +22,7 @@
     "eslint-plugin-prettier": "^3.1.1",
     "faker": "^4.1.0",
     "husky": "^3.0.5",
+    "is-ci-cli": "^1.1.1",
     "lint-staged": "^9.4.0",
     "prettier": "^1.18.2",
     "source-map-explorer": "^2.1.0"
@@ -32,7 +33,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:staging": "env-cmd -f .env.staging npm run build",
-    "test": "react-scripts test",
+    "test": "is-ci \"test:ci\" \"test:watch\"",
+    "test:watch": "react-scripts test",
+    "test:ci": "CI=true react-scripts test --coverage",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -51,7 +54,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
+      "pre-commit": "lint-staged && npm run test:ci",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
