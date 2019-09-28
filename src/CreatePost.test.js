@@ -1,12 +1,104 @@
 import React from "react";
-import { wait } from "@testing-library/react";
+import { render as rtlRender, fireEvent, wait } from "@testing-library/react";
+import axiosMock from "axios";
+import faker from "faker";
 
-import { render } from "./test-utils";
+import callApiMock from "./services/callApi";
 import CreatePost from "./CreatePost";
+import PostProvider from "./PostProvider";
+
+jest.mock("axios");
+jest.mock("./services/callApi");
+
+async function render(ui) {
+  callApiMock.mockImplementation(url => {
+    if (url === "/post/all") {
+      return Promise.resolve({ data: {} });
+    }
+
+    throw new Error(`The endpoint passed haven't been mocked: ${url}`);
+  });
+
+  const dispatch = jest.fn();
+  const utils = rtlRender(
+    <PostProvider value={{ dispatch }}>{ui}</PostProvider>
+  );
+  expect(utils.getByText(/loading/i)).toBeInTheDocument();
+  await wait();
+
+  callApiMock.mockReset();
+
+  return {
+    ...utils,
+    dispatch,
+  };
+}
 
 describe("CreatePost", () => {
-  test("creates a post", async () => {
-    const { debug } = render(<CreatePost />);
+  let uploadedFileUrl = "https://dog.com/dog.jpg";
+  beforeEach(() => {
+    axiosMock.post.mockResolvedValue({
+      data: {
+        secure_url: uploadedFileUrl,
+      },
+    });
+  });
+
+  afterEach(() => {
+    axiosMock.post.mockRestore();
+  });
+
+  test("uploads an image", async () => {
+    const { getByText, getByLabelText, findByAltText } = await render(
+      <CreatePost />
+    );
+    const image = getByLabelText(/image/i);
+    const fileName = faker.system.commonFileName();
+
+    fireEvent.change(image, { target: { files: [fileName] } });
+
+    expect(getByText(/uploading/i)).toBeInTheDocument();
+    const img = await findByAltText(/Upload /);
+    expect(img.src).toBe(uploadedFileUrl);
+    expect(axiosMock.post).toHaveBeenCalledTimes(1);
+  });
+
+  test("creates a new post", async () => {
+    const historyMock = { push: jest.fn() };
+    const { getByText, getByLabelText, dispatch } = await render(
+      <CreatePost history={historyMock} />
+    );
+    const returnValue = { _id: 1 };
+    callApiMock.mockResolvedValue({
+      data: { data: returnValue },
+    });
+    const fileName = faker.system.commonFileName();
+    const titleValue = faker.lorem.sentence();
+    const contentValue = faker.lorem.paragraph();
+    const image = getByLabelText(/image/i);
+    const title = getByLabelText(/title/i);
+    const content = getByLabelText(/content/i);
+    const button = getByText(/create/i);
+
+    fireEvent.change(image, { target: { files: [fileName] } });
     await wait();
+    fireEvent.change(title, { target: { value: titleValue } });
+    fireEvent.change(content, { target: { value: contentValue } });
+    fireEvent.click(button);
+    await wait();
+
+    expect(callApiMock).toHaveBeenCalledWith("/post", {
+      method: "POST",
+      data: {
+        title: titleValue,
+        content: contentValue,
+        image: uploadedFileUrl,
+      },
+    });
+    expect(dispatch).toHaveBeenCalledWith({
+      type: "ADD",
+      payload: returnValue,
+    });
+    expect(historyMock.push).toHaveBeenCalledWith(`/post/${returnValue._id}`);
   });
 });

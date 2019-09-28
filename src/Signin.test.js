@@ -64,11 +64,11 @@ describe("Signin", () => {
     } = renderSignin();
 
     fireEvent.click(signInButton);
-    expect(getByText(/email .* required/i));
+    expect(getByText(/email .* required/i)).toBeInTheDocument();
 
     fireEvent.change(emailInput, { target: { value: fakeUser.email } });
     fireEvent.click(signInButton);
-    expect(getByText(/email .* required/i));
+    expect(getByText(/email .* required/i)).toBeInTheDocument();
 
     expect(signin).not.toHaveBeenCalled();
   });

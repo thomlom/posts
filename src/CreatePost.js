@@ -23,7 +23,7 @@ function CreateEvent({ history }) {
   const [formData, setFormData] = React.useReducer((s, a) => ({ ...s, ...a }), {
     image: "",
     title: "",
-    description: "",
+    content: "",
   });
 
   async function uploadFile(e) {
@@ -76,7 +76,7 @@ function CreateEvent({ history }) {
       {error && <FormError>{error}</FormError>}
       <FormInput>
         <Label htmlFor="image">Image</Label>
-        <Input type="file" name="file" onChange={uploadFile} />
+        <Input type="file" name="image" id="image" onChange={uploadFile} />
         {isUploading && <span>Uploading...</span>}
         {formData.image && (
           <PreviewImage src={formData.image} alt="Upload Preview" />
@@ -87,6 +87,7 @@ function CreateEvent({ history }) {
         <Input
           type="text"
           name="title"
+          id="title"
           value={formData.title}
           onChange={handleFormChange}
         />
@@ -96,6 +97,7 @@ function CreateEvent({ history }) {
         <Textarea
           type="text"
           name="content"
+          id="content"
           value={formData.content}
           onChange={handleFormChange}
           rows={15}

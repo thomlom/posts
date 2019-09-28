@@ -29,7 +29,7 @@ function postReducer(posts, action) {
   }
 }
 
-function PostProvider({ children }) {
+function PostProvider({ children, ...rest }) {
   const [isFetchingPosts, setIsFetchingPosts] = useState(true);
   const [posts, dispatch] = useReducer(postReducer, []);
 
@@ -62,7 +62,7 @@ function PostProvider({ children }) {
   }
 
   return (
-    <PostContext.Provider value={{ posts, dispatch, remove }}>
+    <PostContext.Provider value={{ posts, dispatch, remove }} {...rest}>
       {children}
     </PostContext.Provider>
   );
