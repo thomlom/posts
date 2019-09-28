@@ -19,6 +19,7 @@
     "@testing-library/react": "^9.2.0",
     "env-cmd": "^10.0.1",
     "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-jest": "^22.17.0",
     "eslint-plugin-prettier": "^3.1.1",
     "faker": "^4.1.0",
     "husky": "^3.0.5",
@@ -41,8 +42,13 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "plugin:prettier/recommended"
-    ]
+      "plugin:prettier/recommended",
+      "plugin:jest/recommended"
+    ],
+    "rules": {
+      "jest/no-commented-out-tests": "error",
+      "jest/require-top-level-describe": "warn"
+    }
   },
   "prettier": {
     "trailingComma": "es5"
