@@ -12,7 +12,7 @@ import { PostCard, NoPosts } from "./Home.styles";
 
 function Home({ history }) {
   const { posts, remove } = usePost();
-  const { isAuthenticated, user } = useAuth();
+  const { user } = useAuth();
 
   return (
     <div>
@@ -26,13 +26,14 @@ function Home({ history }) {
           return (
             <PostCard
               key={post._id}
+              data-testid={`post-${post._id}`}
               onClick={e => {
                 e.preventDefault();
                 history.push(`/post/${post._id}`);
               }}
             >
               <span>{formatDistanceToNow(new Date(post.date))}</span>
-              {isAuthenticated && post.createdBy._id === user._id && (
+              {user && post.createdBy._id === user._id && (
                 <IconDelete
                   onClick={e => {
                     e.stopPropagation();
