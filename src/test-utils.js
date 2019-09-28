@@ -8,8 +8,8 @@ jest.mock("./services/callApi");
 
 export function render(ui) {
   callApiMock.mockImplementation(url => {
-    if (url === "/event/all") {
-      return { data: {} };
+    if (url === "/post/all") {
+      return Promise.resolve({ data: {} });
     }
   });
 

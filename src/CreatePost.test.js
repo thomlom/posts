@@ -2,11 +2,11 @@ import React from "react";
 import { wait } from "@testing-library/react";
 
 import { render } from "./test-utils";
-import CreateEvent from "./CreateEvent";
+import CreatePost from "./CreatePost";
 
-describe("CreateEvent", () => {
-  test("creates an event", async () => {
-    const { debug } = render(<CreateEvent />);
+describe("CreatePost", () => {
+  test("creates a post", async () => {
+    const { debug } = render(<CreatePost />);
     await wait();
     debug();
   });
