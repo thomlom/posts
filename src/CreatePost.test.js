@@ -8,6 +8,5 @@ describe("CreatePost", () => {
   test("creates a post", async () => {
     const { debug } = render(<CreatePost />);
     await wait();
-    debug();
   });
 });
