@@ -17,11 +17,7 @@ function postReducer(posts, action) {
     case "GET":
       return action.payload;
     case "ADD":
-      const newPosts = [...posts, action.payload];
-      newPosts.sort(
-        (a, b) => new Date(a.date).getTime() > new Date(b.date).getTime()
-      );
-      return newPosts;
+      return [action.payload, ...posts];
     case "REMOVE":
       return posts.filter(post => post._id !== action.payload.postId);
     default:
