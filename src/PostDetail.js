@@ -56,7 +56,7 @@ const PostDetail = ({
         {content && (
           <Content
             dangerouslySetInnerHTML={{
-              __html: marked(content, { sanitize: true }),
+              __html: marked(content),
             }}
           />
         )}
