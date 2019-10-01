@@ -36,7 +36,7 @@ const PostDetail = ({
 
   const { image, title, date, content } = post;
 
-  const loggedUserIsCreator = post.createdBy._id === user._id;
+  const loggedUserIsCreator = user && post.createdBy._id === user._id;
 
   return (
     <Container>
