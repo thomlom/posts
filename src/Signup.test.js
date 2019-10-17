@@ -2,16 +2,16 @@ import React from "react";
 import { render, fireEvent, wait } from "@testing-library/react";
 import faker from "faker";
 
-import AuthProvider from "./AuthProvider";
+import { AuthContext } from "./AuthProvider";
 import Signup from "./Signup";
 
 function renderSignup() {
   const signup = jest.fn().mockResolvedValue();
   const historyMock = { push: jest.fn() };
   const utils = render(
-    <AuthProvider value={{ signup }}>
+    <AuthContext.Provider value={{ signup }}>
       <Signup history={historyMock} />
-    </AuthProvider>
+    </AuthContext.Provider>
   );
 
   const emailInput = utils.getByLabelText(/email/i);
@@ -71,15 +71,15 @@ describe("Signup", () => {
     } = renderSignup();
 
     fireEvent.click(signUpButton);
-    expect(getByText(/email .* required/i));
+    getByText(/email .* required/i);
 
     fireEvent.change(emailInput, { target: { value: fakeUser.email } });
     fireEvent.click(signUpButton);
-    expect(getByText(/email .* required/i));
+    getByText(/email .* required/i);
 
     fireEvent.change(passwordInput, { target: { value: fakeUser.password } });
     fireEvent.click(signUpButton);
-    expect(getByText(/email .* required/i));
+    getByText(/email .* required/i);
 
     expect(signup).not.toHaveBeenCalled();
   });

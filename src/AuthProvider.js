@@ -4,7 +4,7 @@ import callApi, { TOKEN_NAME } from "./services/callApi";
 
 import Loading from "./Loading";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 function AuthProvider(props) {
   const [isFetchingUser, setIsFetchingUser] = useState(true);

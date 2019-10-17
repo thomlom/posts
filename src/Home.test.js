@@ -9,7 +9,7 @@ import { formatDistanceToNow } from "date-fns";
 import faker from "faker";
 
 import callApiMock from "./services/callApi";
-import AuthProvider from "./AuthProvider";
+import { AuthContext } from "./AuthProvider";
 import PostProvider from "./PostProvider";
 import Home from "./Home";
 
@@ -19,9 +19,9 @@ async function render(ui, { posts, userId } = { posts: [], userId: 1 }) {
   callApiMock.mockResolvedValue({ data: { data: posts } });
 
   const utils = rtlRender(
-    <AuthProvider value={{ user: { _id: userId } }}>
+    <AuthContext.Provider value={{ user: { _id: userId } }}>
       <PostProvider>{ui}</PostProvider>
-    </AuthProvider>
+    </AuthContext.Provider>
   );
   await wait();
 

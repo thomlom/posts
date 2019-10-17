@@ -2,16 +2,15 @@ import React from "react";
 import { render, fireEvent, wait } from "@testing-library/react";
 import faker from "faker";
 
-import AuthProvider from "./AuthProvider";
+import { AuthContext } from "./AuthProvider";
 import Signin from "./Signin";
 
-function renderSignin() {
-  const signin = jest.fn().mockResolvedValue();
+function renderSignin({ signin = jest.fn().mockResolvedValue() } = {}) {
   const historyMock = { push: jest.fn() };
   const utils = render(
-    <AuthProvider value={{ signin }}>
+    <AuthContext.Provider value={{ signin }}>
       <Signin history={historyMock} />
-    </AuthProvider>
+    </AuthContext.Provider>
   );
 
   const emailInput = utils.getByLabelText(/email/i);
@@ -22,6 +21,14 @@ function renderSignin() {
     password: faker.internet.password(),
   };
 
+  function submitSignInForm() {
+    fireEvent.change(emailInput, { target: { value: fakeUser.email } });
+    fireEvent.change(passwordInput, { target: { value: fakeUser.password } });
+    fireEvent.click(signInButton);
+
+    expect(signin).toHaveBeenCalledWith(fakeUser);
+  }
+
   return {
     emailInput,
     passwordInput,
@@ -29,29 +36,18 @@ function renderSignin() {
     fakeUser,
     signin,
     push: historyMock.push,
+    submitSignInForm,
     ...utils,
   };
 }
 
 describe("Signin", () => {
   test("signs in the user", async () => {
-    const {
-      emailInput,
-      passwordInput,
-      signInButton,
-      fakeUser,
-      signin,
-      push,
-    } = renderSignin();
+    const { submitSignInForm, push } = renderSignin();
 
-    fireEvent.change(emailInput, { target: { value: fakeUser.email } });
-    fireEvent.change(passwordInput, { target: { value: fakeUser.password } });
-    fireEvent.click(signInButton);
+    submitSignInForm();
 
-    await wait(() => {
-      expect(signin).toHaveBeenCalledWith(fakeUser);
-      expect(push).toHaveBeenCalledWith("/");
-    });
+    await wait(() => expect(push).toHaveBeenCalledWith("/"));
   });
 
   test("throws an error if user hasn't provided any email or password", () => {
@@ -71,5 +67,17 @@ describe("Signin", () => {
     expect(getByText(/email .* required/i)).toBeInTheDocument();
 
     expect(signin).not.toHaveBeenCalled();
+  });
+
+  test("throws an error if something unexpected occurs during signin", async () => {
+    const errorMessage = "Oops. Something unexpected happened.";
+    const { submitSignInForm, findByText, push } = renderSignin({
+      signin: jest.fn().mockRejectedValue({ response: { data: errorMessage } }),
+    });
+
+    submitSignInForm();
+
+    await findByText(errorMessage);
+    expect(push).not.toHaveBeenCalled();
   });
 });

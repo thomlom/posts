@@ -10,7 +10,7 @@ import callApi from "./services/callApi";
 
 import Loading from "./Loading";
 
-const PostContext = createContext();
+export const PostContext = createContext();
 
 function postReducer(posts, action) {
   switch (action.type) {
