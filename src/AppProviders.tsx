@@ -3,7 +3,7 @@ import React from "react";
 import AuthProvider from "./AuthProvider";
 import PostProvider from "./PostProvider";
 
-const AppProviders = ({ children }) => {
+const AppProviders: React.FC = ({ children }) => {
   return (
     <AuthProvider>
       <PostProvider>{children}</PostProvider>
