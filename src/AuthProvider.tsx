@@ -4,11 +4,29 @@ import callApi, { TOKEN_NAME } from "./services/callApi";
 
 import Loading from "./Loading";
 
-export const AuthContext = createContext();
+interface SignFormData {
+  email: string;
+  password: string;
+  name?: string;
+}
 
-function AuthProvider(props) {
+interface User {
+  email: string;
+}
+
+interface AuthContextType {
+  isAuthenticated: boolean;
+  user: User | null;
+  signin: (form: SignFormData) => Promise<void>;
+  signup: (form: SignFormData) => Promise<void>;
+  signout: () => void;
+}
+
+export const AuthContext = createContext<AuthContextType | null>(null);
+
+const AuthProvider: React.FC = ({ children }) => {
   const [isFetchingUser, setIsFetchingUser] = useState(true);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
 
   async function getUser() {
     try {
@@ -23,17 +41,18 @@ function AuthProvider(props) {
     }
   }
 
-  function sign(url) {
-    return async function(form) {
+  function sign(url: string) {
+    return async function(form: SignFormData) {
       const { data } = await callApi(url, {
         method: "POST",
         data: form,
       });
-      const token = data.token;
+
+      const token: string = data.token;
 
       if (token) {
         window.localStorage.setItem(TOKEN_NAME, data.token);
-        getUser(token);
+        getUser();
       }
     };
   }
@@ -64,10 +83,11 @@ function AuthProvider(props) {
         signin,
         signout,
       }}
-      {...props}
-    />
+    >
+      {children}
+    </AuthContext.Provider>
   );
-}
+};
 
 export const useAuth = () => useContext(AuthContext);
 
