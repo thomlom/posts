@@ -10,8 +10,10 @@ interface SignFormData {
   name?: string;
 }
 
-interface User {
+export interface User {
+  _id: string;
   email: string;
+  name: string;
 }
 
 interface AuthContextType {
@@ -89,6 +91,14 @@ const AuthProvider: React.FC = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const ctx = useContext(AuthContext);
+
+  if (ctx === null) {
+    throw new Error("useAuth must be used within a AuthProvider");
+  }
+
+  return ctx;
+};
 
 export default AuthProvider;

@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { RouteComponentProps } from "react-router-dom";
 
 import callApi from "./services/callApi";
 
@@ -15,20 +16,34 @@ import {
 } from "./shared.styles";
 import { PreviewImage } from "./CreatePost.styles";
 
-function CreateEvent({ history }) {
+interface FormData {
+  image: string;
+  title: string;
+  content: string;
+}
+
+const CreateEvent: React.FC<RouteComponentProps> = ({ history }) => {
   const { dispatch } = usePost();
 
   const [error, setError] = React.useState("");
   const [isUploading, setIsUploading] = React.useState(false);
-  const [formData, setFormData] = React.useReducer((s, a) => ({ ...s, ...a }), {
-    image: "",
-    title: "",
-    content: "",
-  });
+  const [formData, setFormData] = React.useReducer(
+    (s: FormData, a: Partial<FormData>) => ({ ...s, ...a }),
+    {
+      image: "",
+      title: "",
+      content: "",
+    }
+  );
 
-  async function uploadFile(e) {
+  async function uploadFile(e: React.ChangeEvent<HTMLInputElement>) {
     setIsUploading(true);
     const files = e.target.files;
+
+    if (!files) {
+      return;
+    }
+
     const data = new FormData();
     data.append("file", files[0]);
     data.append("upload_preset", "events");
@@ -43,11 +58,13 @@ function CreateEvent({ history }) {
     setIsUploading(false);
   }
 
-  function handleFormChange(e) {
+  function handleFormChange(
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) {
     setFormData({ [e.target.name]: e.target.value });
   }
 
-  async function submitEventForm(e) {
+  async function submitEventForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const { image, title, content } = formData;
@@ -95,7 +112,6 @@ function CreateEvent({ history }) {
       <FormInput>
         <Label htmlFor="content">Content</Label>
         <Textarea
-          type="text"
           name="content"
           id="content"
           value={formData.content}
@@ -108,6 +124,6 @@ function CreateEvent({ history }) {
       </FormButton>
     </form>
   );
-}
+};
 
 export default CreateEvent;
