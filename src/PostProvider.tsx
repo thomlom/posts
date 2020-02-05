@@ -10,9 +10,31 @@ import callApi from "./services/callApi";
 
 import Loading from "./Loading";
 
-export const PostContext = createContext();
+import { User } from "./AuthProvider";
 
-function postReducer(posts, action) {
+interface Post {
+  _id: string;
+  image: string;
+  title: string;
+  content: string;
+  date: Date;
+  createdBy: User;
+}
+
+type PostAction =
+  | { type: "GET"; payload: Post[] }
+  | { type: "ADD"; payload: Post }
+  | { type: "REMOVE"; payload: { postId: string } };
+
+interface PostContextType {
+  posts: Post[];
+  dispatch: React.Dispatch<PostAction>;
+  remove: (id: string) => void;
+}
+
+export const PostContext = createContext<PostContextType | null>(null);
+
+function postReducer(posts: Post[], action: PostAction) {
   switch (action.type) {
     case "GET":
       return action.payload;
@@ -25,11 +47,11 @@ function postReducer(posts, action) {
   }
 }
 
-function PostProvider({ children, ...rest }) {
+const PostProvider: React.FC = ({ children, ...rest }) => {
   const [isFetchingPosts, setIsFetchingPosts] = useState(true);
   const [posts, dispatch] = useReducer(postReducer, []);
 
-  async function remove(id) {
+  async function remove(id: string) {
     const {
       data: { data: removedPost },
     } = await callApi(`/post/${id}`, {
@@ -62,8 +84,16 @@ function PostProvider({ children, ...rest }) {
       {children}
     </PostContext.Provider>
   );
-}
+};
 
-export const usePost = () => useContext(PostContext);
+export const usePost = () => {
+  const ctx = useContext(PostContext);
+
+  if (ctx === null) {
+    throw new Error("usePost must be used within a PostProvider");
+  }
+
+  return ctx;
+};
 
 export default PostProvider;

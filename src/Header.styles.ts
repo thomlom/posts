@@ -56,7 +56,7 @@ export const Title = styled.h1`
   text-decoration: none;
 `;
 
-export const StyledNav = styled.nav`
+export const StyledNav = styled.nav<{ isMenuOpen: boolean }>`
   button:not(:first-child),
   a:not(:first-child) {
     margin-left: var(--m-2);

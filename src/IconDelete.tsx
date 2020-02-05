@@ -1,6 +1,10 @@
 import React from "react";
 
-const IconDelete = ({ onClick }) => {
+interface Props {
+  onClick: (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => void;
+}
+
+const IconDelete: React.FC<Props> = ({ onClick }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

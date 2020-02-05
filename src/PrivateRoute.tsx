@@ -1,9 +1,18 @@
 import React from "react";
-import { Route, Redirect } from "react-router-dom";
+import {
+  Route,
+  Redirect,
+  RouteProps,
+  RouteComponentProps,
+} from "react-router-dom";
 
 import { useAuth } from "./AuthProvider";
 
-function PrivateRoute({ component: Component, ...rest }) {
+interface Props extends RouteProps {
+  component: React.FC<RouteComponentProps>;
+}
+
+const PrivateRoute: React.FC<Props> = ({ component: Component, ...rest }) => {
   const { isAuthenticated } = useAuth();
 
   return (
@@ -14,6 +23,6 @@ function PrivateRoute({ component: Component, ...rest }) {
       }
     />
   );
-}
+};
 
 export default PrivateRoute;

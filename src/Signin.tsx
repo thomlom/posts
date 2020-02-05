@@ -1,4 +1,5 @@
 import React from "react";
+import { RouteComponentProps } from "react-router-dom";
 
 import { useAuth } from "./AuthProvider";
 import {
@@ -10,29 +11,36 @@ import {
   Input,
 } from "./shared.styles";
 
-function Signup({ history }) {
-  const { signup } = useAuth();
-  const [error, setError] = React.useState("");
-  const [formData, setFormData] = React.useReducer((s, a) => ({ ...s, ...a }), {
-    email: "",
-    name: "",
-    password: "",
-  });
+interface FormData {
+  email: string;
+  password: string;
+}
 
-  function handleFormChange(e) {
+const Signin: React.FC<RouteComponentProps> = ({ history }) => {
+  const { signin } = useAuth();
+  const [error, setError] = React.useState("");
+  const [formData, setFormData] = React.useReducer(
+    (s: FormData, a: Partial<FormData>) => ({ ...s, ...a }),
+    {
+      email: "",
+      password: "",
+    }
+  );
+
+  function handleFormChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({ [e.target.name]: e.target.value });
   }
 
-  async function submitSignForm(e) {
+  async function submitSignForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (!formData.email || !formData.password || !formData.name) {
-      setError("Password, email and name are required.");
+    if (!formData.email || !formData.password) {
+      setError("Password and email are required.");
       return;
     }
 
     try {
-      await signup(formData);
+      await signin(formData);
       history.push("/");
     } catch ({ response: { data } }) {
       setError(data);
@@ -41,7 +49,7 @@ function Signup({ history }) {
 
   return (
     <form onSubmit={submitSignForm}>
-      <FormTitle>Welcome.</FormTitle>
+      <FormTitle>Hello again.</FormTitle>
       {error && <FormError>{error}</FormError>}
       <FormInput>
         <Label htmlFor="email">Email</Label>
@@ -50,16 +58,6 @@ function Signup({ history }) {
           id="email"
           name="email"
           value={formData.email}
-          onChange={handleFormChange}
-        />
-      </FormInput>
-      <FormInput>
-        <Label htmlFor="name">Name</Label>
-        <Input
-          type="text"
-          id="name"
-          name="name"
-          value={formData.name}
           onChange={handleFormChange}
         />
       </FormInput>
@@ -73,9 +71,9 @@ function Signup({ history }) {
           onChange={handleFormChange}
         />
       </FormInput>
-      <FormButton type="submit">Sign Up</FormButton>
+      <FormButton type="submit">Sign In</FormButton>
     </form>
   );
-}
+};
 
-export default Signup;
+export default Signin;

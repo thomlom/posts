@@ -1,4 +1,5 @@
 import React from "react";
+import { RouteComponentProps } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 
 import { useAuth } from "./AuthProvider";
@@ -10,7 +11,7 @@ import empty from "./assets/empty.svg";
 
 import { PostCard, NoPosts } from "./Home.styles";
 
-function Home({ history }) {
+const Home: React.FC<RouteComponentProps> = ({ history }) => {
   const { posts, remove } = usePost();
   const { user } = useAuth();
 
@@ -22,7 +23,7 @@ function Home({ history }) {
           <p>No posts.</p>
         </NoPosts>
       ) : (
-        posts.map(post => {
+        posts.map((post: any) => {
           return (
             <PostCard
               key={post._id}
@@ -35,7 +36,7 @@ function Home({ history }) {
               <span>{formatDistanceToNow(new Date(post.date))}</span>
               {user && post.createdBy._id === user._id && (
                 <IconDelete
-                  onClick={e => {
+                  onClick={(e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
                     e.stopPropagation();
                     if (
                       window.confirm(
@@ -58,6 +59,6 @@ function Home({ history }) {
       )}
     </div>
   );
-}
+};
 
 export default Home;
