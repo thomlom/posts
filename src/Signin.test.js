@@ -1,32 +1,40 @@
 import React from "react";
-import { render, fireEvent, wait } from "@testing-library/react";
-import faker from "faker";
+import { screen, fireEvent, wait } from "@testing-library/react";
+import { build, fake } from "@jackfranklin/test-data-bot";
 
-import { AuthContext } from "./AuthProvider";
+import AuthProvider from "./AuthProvider";
 import Signin from "./Signin";
 
-function renderSignin({ signin = jest.fn().mockResolvedValue() } = {}) {
-  const historyMock = { push: jest.fn() };
-  const utils = render(
-    <AuthContext.Provider value={{ signin }}>
-      <Signin history={historyMock} />
-    </AuthContext.Provider>
+import { renderWithRouter } from "./testUtils";
+import callApiMock, { TOKEN_NAME } from "./services/callApi";
+
+jest.mock("./services/callApi");
+
+const userBuilder = build("User", {
+  fields: {
+    email: fake(f => f.internet.email()),
+    password: fake(f => f.internet.password()),
+  },
+});
+
+function render() {
+  const { history } = renderWithRouter(
+    <AuthProvider>
+      <Signin />
+    </AuthProvider>,
+    { route: "/signin" }
   );
 
-  const emailInput = utils.getByLabelText(/email/i);
-  const passwordInput = utils.getByLabelText(/password/i);
-  const signInButton = utils.getByText(/sign in/i);
-  const fakeUser = {
-    email: faker.internet.email(),
-    password: faker.internet.password(),
-  };
+  const emailInput = screen.getByLabelText(/email/i);
+  const passwordInput = screen.getByLabelText(/password/i);
+  const signInButton = screen.getByText(/sign in/i);
+
+  const fakeUser = userBuilder();
 
   function submitSignInForm() {
     fireEvent.change(emailInput, { target: { value: fakeUser.email } });
     fireEvent.change(passwordInput, { target: { value: fakeUser.password } });
     fireEvent.click(signInButton);
-
-    expect(signin).toHaveBeenCalledWith(fakeUser);
   }
 
   return {
@@ -34,50 +42,52 @@ function renderSignin({ signin = jest.fn().mockResolvedValue() } = {}) {
     passwordInput,
     signInButton,
     fakeUser,
-    signin,
-    push: historyMock.push,
     submitSignInForm,
-    ...utils,
+    history,
   };
 }
 
 describe("Signin", () => {
   test("signs in the user", async () => {
-    const { submitSignInForm, push } = renderSignin();
-
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
+    callApiMock.mockResolvedValue({
+      data: { token: "my token" },
+    });
+    const { submitSignInForm, history } = render();
     submitSignInForm();
 
-    await wait(() => expect(push).toHaveBeenCalledWith("/"));
+    await wait(() =>
+      expect(history.entries[history.length - 1].pathname).toBe("/")
+    );
+
+    // https://github.com/facebook/jest/issues/6798#issuecomment-412871616
+    expect(setItemSpy).toHaveBeenCalledWith(TOKEN_NAME, "my token");
+    // Clean the local storage
+    window.localStorage.removeItem(TOKEN_NAME);
   });
 
   test("throws an error if user hasn't provided any email or password", () => {
-    const {
-      emailInput,
-      signInButton,
-      fakeUser,
-      signin,
-      getByText,
-    } = renderSignin();
+    const { signInButton, emailInput, fakeUser } = render();
 
     fireEvent.click(signInButton);
-    expect(getByText(/email .* required/i)).toBeInTheDocument();
+    screen.getByText(/email .* required/i);
 
-    fireEvent.change(emailInput, { target: { value: fakeUser.email } });
+    fireEvent.change(emailInput, {
+      target: {
+        value: fakeUser.email,
+      },
+    });
     fireEvent.click(signInButton);
-    expect(getByText(/email .* required/i)).toBeInTheDocument();
-
-    expect(signin).not.toHaveBeenCalled();
+    screen.getByText(/email .* required/i);
   });
 
   test("throws an error if something unexpected occurs during signin", async () => {
     const errorMessage = "Oops. Something unexpected happened.";
-    const { submitSignInForm, findByText, push } = renderSignin({
-      signin: jest.fn().mockRejectedValue({ response: { data: errorMessage } }),
-    });
+    callApiMock.mockRejectedValue({ response: { data: errorMessage } });
 
+    const { submitSignInForm } = render();
     submitSignInForm();
 
-    await findByText(errorMessage);
-    expect(push).not.toHaveBeenCalled();
+    await screen.findByText(errorMessage);
   });
 });

@@ -1,28 +1,51 @@
 import React from "react";
-import { render, fireEvent, wait } from "@testing-library/react";
-import faker from "faker";
+import { screen, fireEvent, wait } from "@testing-library/react";
+import { build, fake } from "@jackfranklin/test-data-bot";
 
-import { AuthContext } from "./AuthProvider";
+import AuthProvider from "./AuthProvider";
 import Signup from "./Signup";
 
-function renderSignup() {
-  const signup = jest.fn().mockResolvedValue();
-  const historyMock = { push: jest.fn() };
-  const utils = render(
-    <AuthContext.Provider value={{ signup }}>
-      <Signup history={historyMock} />
-    </AuthContext.Provider>
+import { renderWithRouter } from "./testUtils";
+import callApiMock, { TOKEN_NAME } from "./services/callApi";
+
+jest.mock("./services/callApi");
+
+const userBuilder = build("User", {
+  fields: {
+    email: fake(f => f.internet.email()),
+    password: fake(f => f.internet.password()),
+    name: fake(f => f.name.firstName()),
+  },
+});
+
+function render() {
+  const { history } = renderWithRouter(
+    <AuthProvider>
+      <Signup />
+    </AuthProvider>,
+    { route: "/signup" }
   );
 
-  const emailInput = utils.getByLabelText(/email/i);
-  const passwordInput = utils.getByLabelText(/password/i);
-  const nameInput = utils.getByLabelText(/name/i);
-  const signUpButton = utils.getByText(/sign up/i);
-  const fakeUser = {
-    email: faker.internet.email(),
-    password: faker.internet.password(),
-    name: faker.name.firstName(),
-  };
+  const emailInput = screen.getByLabelText(/email/i);
+  const passwordInput = screen.getByLabelText(/password/i);
+  const nameInput = screen.getByLabelText(/name/i);
+  const signUpButton = screen.getByText(/sign up/i);
+
+  const fakeUser = userBuilder();
+
+  function submitSignUpForm() {
+    fireEvent.change(emailInput, {
+      target: { value: fakeUser.email },
+    });
+    fireEvent.change(passwordInput, {
+      target: { value: fakeUser.password },
+    });
+    fireEvent.change(nameInput, {
+      target: { value: fakeUser.name },
+    });
+
+    fireEvent.click(signUpButton);
+  }
 
   return {
     emailInput,
@@ -30,57 +53,39 @@ function renderSignup() {
     nameInput,
     signUpButton,
     fakeUser,
-    signup,
-    push: historyMock.push,
-    ...utils,
+    submitSignUpForm,
+    history,
   };
 }
 
 describe("Signup", () => {
   test("signs up the user", async () => {
-    const {
-      emailInput,
-      passwordInput,
-      nameInput,
-      signUpButton,
-      fakeUser,
-      signup,
-      push,
-    } = renderSignup();
-
-    fireEvent.change(emailInput, { target: { value: fakeUser.email } });
-    fireEvent.change(passwordInput, { target: { value: fakeUser.password } });
-    fireEvent.change(nameInput, { target: { value: fakeUser.name } });
-
-    fireEvent.click(signUpButton);
-
-    await wait(() => {
-      expect(signup).toHaveBeenCalledWith(fakeUser);
-      expect(push).toHaveBeenCalledWith("/");
+    const localStorageSpy = jest.spyOn(Storage.prototype, "setItem");
+    callApiMock.mockResolvedValue({
+      data: { token: "my token", user: {} },
     });
+    const { submitSignUpForm, history } = render();
+    submitSignUpForm();
+
+    await wait(() =>
+      expect(history.entries[history.length - 1].pathname).toBe("/")
+    );
+    expect(localStorageSpy).toHaveBeenCalledWith(TOKEN_NAME, "my token");
+    window.localStorage.removeItem(TOKEN_NAME);
   });
 
   test("throws an error if user hasn't provided any email, password or name", () => {
-    const {
-      emailInput,
-      passwordInput,
-      signUpButton,
-      fakeUser,
-      signup,
-      getByText,
-    } = renderSignup();
+    const { signUpButton, emailInput, passwordInput, fakeUser } = render();
 
     fireEvent.click(signUpButton);
-    getByText(/email .* required/i);
+    screen.getByText(/email .* required/i);
 
     fireEvent.change(emailInput, { target: { value: fakeUser.email } });
     fireEvent.click(signUpButton);
-    getByText(/email .* required/i);
+    screen.getByText(/email .* required/i);
 
     fireEvent.change(passwordInput, { target: { value: fakeUser.password } });
     fireEvent.click(signUpButton);
-    getByText(/email .* required/i);
-
-    expect(signup).not.toHaveBeenCalled();
+    screen.getByText(/email .* required/i);
   });
 });

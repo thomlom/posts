@@ -1,5 +1,5 @@
 import React from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { useAuth } from "./AuthProvider";
 import {
@@ -17,7 +17,8 @@ interface FormData {
   name: string;
 }
 
-const Signup: React.FC<RouteComponentProps> = ({ history }) => {
+const Signup = () => {
+  const history = useHistory();
   const { signup } = useAuth();
   const [error, setError] = React.useState("");
   const [formData, setFormData] = React.useReducer(

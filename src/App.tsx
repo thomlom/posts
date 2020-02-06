@@ -1,6 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
+import AuthProvider from "./AuthProvider";
+import PostProvider from "./PostProvider";
+
 import Header from "./Header";
 import Home from "./Home";
 import Signin from "./Signin";
@@ -14,19 +17,23 @@ import { Container } from "./App.styles";
 
 function App() {
   return (
-    <Container>
-      <Router>
-        <Header />
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/signin" component={Signin} />
-          <Route path="/signup" component={Signup} />
-          <PrivateRoute path="/create" component={CreatePost} />
-          <Route path="/post/:postId" component={PostDetail} />
-          <Route component={NotFound} />
-        </Switch>
-      </Router>
-    </Container>
+    <PostProvider>
+      <AuthProvider>
+        <Container>
+          <Router>
+            <Header />
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/signin" component={Signin} />
+              <Route path="/signup" component={Signup} />
+              <PrivateRoute path="/create" component={CreatePost} />
+              <Route path="/post/:postId" component={PostDetail} />
+              <Route component={NotFound} />
+            </Switch>
+          </Router>
+        </Container>
+      </AuthProvider>
+    </PostProvider>
   );
 }
 

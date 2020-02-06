@@ -1,5 +1,5 @@
 import React from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 
 import { useAuth } from "./AuthProvider";
@@ -11,7 +11,8 @@ import empty from "./assets/empty.svg";
 
 import { PostCard, NoPosts } from "./Home.styles";
 
-const Home: React.FC<RouteComponentProps> = ({ history }) => {
+const Home = () => {
+  const history = useHistory();
   const { posts, remove } = usePost();
   const { user } = useAuth();
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { format } from "date-fns";
 import marked from "marked";
-import { RouteComponentProps } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import { useAuth } from "./AuthProvider";
 import { usePost } from "./PostProvider";
@@ -11,12 +11,9 @@ import IconDelete from "./IconDelete";
 
 import { Container, Image, Infos, Info, Content } from "./PostDetail.styles";
 
-const PostDetail: React.FC<RouteComponentProps<{ postId: string }>> = ({
-  history,
-  match: {
-    params: { postId },
-  },
-}) => {
+const PostDetail = () => {
+  const history = useHistory();
+  const { postId } = useParams();
   const { user } = useAuth();
   const { posts, remove } = usePost();
 
@@ -56,6 +53,7 @@ const PostDetail: React.FC<RouteComponentProps<{ postId: string }>> = ({
         </Info>
         {content && (
           <Content
+            data-testid="markdown"
             dangerouslySetInnerHTML={{
               __html: marked(content),
             }}

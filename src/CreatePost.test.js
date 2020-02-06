@@ -1,7 +1,7 @@
 import React from "react";
 import { render as rtlRender, fireEvent, wait } from "@testing-library/react";
 import axiosMock from "axios";
-import faker from "faker";
+import { build, fake } from "@jackfranklin/test-data-bot";
 
 import callApiMock from "./services/callApi";
 import CreatePost from "./CreatePost";
@@ -9,6 +9,14 @@ import PostProvider from "./PostProvider";
 
 jest.mock("axios");
 jest.mock("./services/callApi");
+
+const postBuilder = build("Post", {
+  fields: {
+    title: fake(f => f.lorem.words()),
+    content: fake(f => f.lorem.sentences()),
+    fileName: fake(f => f.system.commonFileName()),
+  },
+});
 
 async function render(ui) {
   callApiMock.mockImplementation(url => {
@@ -53,7 +61,7 @@ describe("CreatePost", () => {
       <CreatePost />
     );
     const image = getByLabelText(/image/i);
-    const fileName = faker.system.commonFileName();
+    const fileName = fake(f => f.system.commonFileName());
 
     fireEvent.change(image, { target: { files: [fileName] } });
 
@@ -72,26 +80,26 @@ describe("CreatePost", () => {
     callApiMock.mockResolvedValue({
       data: { data: returnValue },
     });
-    const fileName = faker.system.commonFileName();
-    const titleValue = faker.lorem.sentence();
-    const contentValue = faker.lorem.paragraph();
+
+    const post = postBuilder();
+
     const image = getByLabelText(/image/i);
     const title = getByLabelText(/title/i);
     const content = getByLabelText(/content/i);
     const button = getByText(/create/i);
 
-    fireEvent.change(image, { target: { files: [fileName] } });
+    fireEvent.change(image, { target: { files: [post.fileName] } });
     await wait();
-    fireEvent.change(title, { target: { value: titleValue } });
-    fireEvent.change(content, { target: { value: contentValue } });
+    fireEvent.change(title, { target: { value: post.title } });
+    fireEvent.change(content, { target: { value: post.content } });
     fireEvent.click(button);
     await wait();
 
     expect(callApiMock).toHaveBeenCalledWith("/post", {
       method: "POST",
       data: {
-        title: titleValue,
-        content: contentValue,
+        title: post.title,
+        content: post.content,
         image: uploadedFileUrl,
       },
     });

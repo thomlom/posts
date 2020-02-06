@@ -1,93 +1,69 @@
 import React from "react";
-import {
-  render as rtlRender,
-  wait,
-  within,
-  fireEvent,
-} from "@testing-library/react";
+import { screen, within, fireEvent, wait } from "@testing-library/react";
 import { formatDistanceToNow } from "date-fns";
-import faker from "faker";
 
-import callApiMock from "./services/callApi";
-import { AuthContext } from "./AuthProvider";
-import PostProvider from "./PostProvider";
+import {
+  renderWithRouterAndProviders,
+  postBuilder,
+  userBuilder,
+} from "./testUtils";
 import Home from "./Home";
-
-jest.mock("./services/callApi");
-
-async function render(ui, { posts, userId } = { posts: [], userId: 1 }) {
-  callApiMock.mockResolvedValue({ data: { data: posts } });
-
-  const utils = rtlRender(
-    <AuthContext.Provider value={{ user: { _id: userId } }}>
-      <PostProvider>{ui}</PostProvider>
-    </AuthContext.Provider>
-  );
-  await wait();
-
-  expect(callApiMock).toHaveBeenCalledWith("/post/all", { method: "GET" });
-  callApiMock.mockClear();
-
-  return { ...utils, userId };
-}
-
-function generatePost(overrides) {
-  return {
-    _id: faker.random.uuid(),
-    image: faker.random.image(),
-    title: faker.lorem.sentence(),
-    content: faker.lorem.paragraph(),
-    createdBy: { _id: faker.random.uuid(), name: faker.name.firstName() },
-    date: faker.date.recent(),
-    ...overrides,
-  };
-}
 
 describe("Home", () => {
   test("displays no posts if there are no posts", async () => {
-    const { getByText, getByAltText } = await render(<Home />);
-    expect(getByAltText(/carrying an empty box/i)).toBeInTheDocument();
-    expect(getByText(/no posts/i)).toBeInTheDocument();
+    renderWithRouterAndProviders(<Home />, { posts: [] });
+    screen.findByAltText(/carrying an empty box/i);
+    screen.findByText(/no posts/i);
   });
 
   test("displays the posts", async () => {
-    const posts = [generatePost(), generatePost(), generatePost()];
-    const { getByTestId } = await render(<Home />, { posts });
+    const posts = [postBuilder(), postBuilder(), postBuilder()];
+    renderWithRouterAndProviders(<Home />, { posts });
+
+    await wait();
 
     posts.forEach(post => {
-      const { getByText, getByAltText } = within(
-        getByTestId(`post-${post._id}`)
-      );
-      expect(getByAltText(post.title)).toBeInTheDocument();
-      expect(getByText(post.title)).toBeInTheDocument();
-      expect(
-        getByText(`Written by ${post.createdBy.name}`)
-      ).toBeInTheDocument();
-      expect(getByText(formatDistanceToNow(post.date))).toBeInTheDocument();
+      const postElement = screen.getByTestId(`post-${post._id}`);
+      const { getByText, getByAltText } = within(postElement);
+      getByAltText(post.title);
+      getByText(post.title);
+      getByText(`Written by ${post.createdBy.name}`);
+      getByText(formatDistanceToNow(post.date));
     });
   });
 
   test("creator can delete a post", async () => {
-    const userId = 1;
-    const creatorName = faker.name.firstName();
+    const user = userBuilder();
+
     const posts = [
-      generatePost(),
-      generatePost({
-        createdBy: { _id: userId, name: creatorName },
+      postBuilder(),
+      postBuilder({
+        overrides: {
+          createdBy: user,
+        },
       }),
     ];
+
+    const postToDelete = posts[1];
     const confirmMock = jest.fn().mockReturnValue(true);
     window.confirm = confirmMock;
-    const { getByTestId } = await render(<Home />, {
+
+    const { callApiMock } = renderWithRouterAndProviders(<Home />, {
       posts,
-      userId,
+      user,
+      endpoints: {
+        [`/post/${postToDelete._id}`]: Promise.resolve({
+          data: { data: postToDelete },
+        }),
+      },
     });
-    callApiMock.mockResolvedValue({ data: { data: { _id: posts[1]._id } } });
-    const postOfCreatorUtils = within(getByTestId(`post-${posts[1]._id}`));
-    expect(
-      postOfCreatorUtils.getByText(`Written by ${creatorName}`)
-    ).toBeInTheDocument();
-    const deleteIcon = postOfCreatorUtils.getByTestId("delete");
+
+    const postToDeleteElement = await screen.findByTestId(
+      `post-${postToDelete._id}`
+    );
+    const deleteIcon = within(postToDeleteElement).getByTestId("delete");
+
+    expect(screen.queryByText(`${postToDelete.title}`)).toBeInTheDocument();
 
     fireEvent.click(deleteIcon);
     await wait();
@@ -96,8 +72,6 @@ describe("Home", () => {
     expect(callApiMock).toHaveBeenCalledWith(`/post/${posts[1]._id}`, {
       method: "DELETE",
     });
-    expect(
-      postOfCreatorUtils.getByText(`Written by ${creatorName}`)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(`${postToDelete.title}`)).not.toBeInTheDocument();
   });
 });

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { RouteComponentProps } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { Button } from "./shared.styles";
 
@@ -14,7 +14,8 @@ const Container = styled.div`
   }
 `;
 
-const NotFound: React.FC<RouteComponentProps> = ({ history }) => {
+const NotFound = () => {
+  const history = useHistory();
   return (
     <Container>
       <p>Oops, there's nothing here!</p>

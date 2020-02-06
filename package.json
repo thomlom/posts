@@ -2,6 +2,7 @@
   "name": "posts-client",
   "private": true,
   "dependencies": {
+    "@reach/visually-hidden": "^0.8.0",
     "axios": "^0.19.2",
     "date-fns": "^2.9.0",
     "marked": "^0.8.0",
@@ -15,6 +16,7 @@
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
+    "@jackfranklin/test-data-bot": "^1.0.0",
     "@testing-library/jest-dom": "^5.1.0",
     "@testing-library/react": "^9.4.0",
     "@types/jest": "^25.1.1",
@@ -29,7 +31,6 @@
     "eslint-plugin-jest": "^23.6.0",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-testing-library": "^2.2.0",
-    "faker": "^4.1.0",
     "husky": "^4.2.1",
     "is-ci-cli": "^2.0.0",
     "lint-staged": "^10.0.7",
@@ -45,6 +46,7 @@
     "build:staging": "env-cmd -f .env.staging npm run build",
     "test": "is-ci \"test:ci\" \"test:watch\"",
     "test:watch": "react-scripts test",
+    "test:coverage": "react-scripts test --watchAll --coverage",
     "test:ci": "CI=true react-scripts test --coverage",
     "eject": "react-scripts eject"
   },
@@ -57,7 +59,7 @@
     ],
     "rules": {
       "jest/no-commented-out-tests": "error",
-      "jest/require-top-level-describe": "warn"
+      "jest/expect-expect": "off"
     }
   },
   "prettier": {

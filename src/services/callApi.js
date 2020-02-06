@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const TOKEN_NAME = "events_token";
 
-export default function callApi(endpoint, { ...rest }) {
+export default function callApi(endpoint, rest) {
   const token = window.localStorage.getItem(TOKEN_NAME);
 
   return axios({
