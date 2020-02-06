@@ -8,6 +8,7 @@ import React, {
 
 import callApi from "./services/callApi";
 
+import ErrorMessage from "./Error";
 import Loading from "./Loading";
 
 import { User } from "./AuthProvider";
@@ -48,6 +49,7 @@ function postReducer(posts: Post[], action: PostAction) {
 }
 
 const PostProvider: React.FC = ({ children, ...rest }) => {
+  const [hasError, setHasError] = useState(false);
   const [isFetchingPosts, setIsFetchingPosts] = useState(true);
   const [posts, dispatch] = useReducer(postReducer, []);
 
@@ -63,17 +65,26 @@ const PostProvider: React.FC = ({ children, ...rest }) => {
 
   useEffect(() => {
     async function fetchPosts() {
-      const {
-        data: { data },
-      } = await callApi("/post/all", {
-        method: "GET",
-      });
-      dispatch({ type: "GET", payload: data });
-      setIsFetchingPosts(false);
+      try {
+        const {
+          data: { data },
+        } = await callApi("/post/all", {
+          method: "GET",
+        });
+        dispatch({ type: "GET", payload: data });
+      } catch (e) {
+        setHasError(true);
+      } finally {
+        setIsFetchingPosts(false);
+      }
     }
 
     fetchPosts();
   }, []);
+
+  if (hasError) {
+    return <ErrorMessage />;
+  }
 
   if (isFetchingPosts) {
     return <Loading />;

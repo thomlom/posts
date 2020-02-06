@@ -1,14 +1,14 @@
 import React from "react";
 
-import loading from "./assets/loading.svg";
+import error from "./assets/error.svg";
 
 import { Message } from "./shared.styles";
 
 const Loading = () => {
   return (
     <Message>
-      <img src={loading} alt="Illustration of a woman holding a spinner" />
-      <p>Loading...</p>
+      <img src={error} alt="Illustration of man in front of a red cross" />
+      <p>Oops. Something bad happened!</p>
     </Message>
   );
 };
