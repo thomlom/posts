@@ -4,6 +4,8 @@ orbs:
 workflows:
   test:
     jobs:
+      - cypress/install:
+          build: yarn build
       - cypress/run:
           yarn: true
           command: yarn test && yarn test:e2e
