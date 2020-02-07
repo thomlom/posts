@@ -1,17 +1,9 @@
-import { build, fake } from "@jackfranklin/test-data-bot";
+import { authBuilder } from "../support/builders";
 import { TOKEN_NAME } from "../../src/services/callApi";
-
-const userBuilder = build("User", {
-  fields: {
-    email: fake(f => f.internet.email()),
-    password: fake(f => f.internet.password()),
-    name: fake(f => f.name.firstName()),
-  },
-});
 
 describe("Authentication", () => {
   it("signs up the user", () => {
-    const user = userBuilder();
+    const user = authBuilder();
     cy.server()
       .route("/post/all", { data: [] })
       .route("POST", "/signup", { token: "my token" })
@@ -35,7 +27,7 @@ describe("Authentication", () => {
   });
 
   it("signs in the user and signs out", () => {
-    const user = userBuilder();
+    const user = authBuilder();
     cy.server()
       .route("/post/all", { data: [] })
       .route("POST", "/signin", { token: "my token" })
