@@ -6,6 +6,7 @@ workflows:
     jobs:
       - cypress/install:
           build: yarn build
+          yarn: true
       - cypress/run:
           yarn: true
           command: yarn test && yarn test:e2e
