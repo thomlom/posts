@@ -67,7 +67,7 @@ describe("Signin", () => {
     await screen.findByText(viewedPost.title);
 
     screen.getByText(`Written by ${viewedPost.createdBy.name}`);
-    screen.getByText("February 06, 2020 | 05:52");
+    screen.getByText(/February 06, 2020/i);
     expect(screen.getByTestId("markdown").innerHTML).toMatchInlineSnapshot(`
       "<p>Hello, this is my <em>very</em> first <strong>post</strong>.</p>
       "
