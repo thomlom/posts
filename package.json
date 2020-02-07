@@ -48,7 +48,6 @@
     "dev": "yarn start",
     "start": "react-scripts start",
     "start:nobrowser": "BROWSER=none react-scripts start",
-    "start:e2e": "serve --no-clipboard --single --listen 3000 build",
     "build": "react-scripts build",
     "build:staging": "env-cmd -f .env.staging npm run build",
     "test": "is-ci \"test:ci\" \"test:watch\"",
@@ -57,9 +56,7 @@
     "test:ci": "CI=true react-scripts test --coverage",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "test:e2e:dev": "start-test start:nobrowser 3000 cy:open",
-    "test:e2e:run": "start-test start:e2e 3000 cy:run",
-    "test:e2e": "is-ci \"test:e2e:run\" \"test:e2e:dev\"",
+    "test:e2e": "start-test start:nobrowser 3000 cy:open",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
