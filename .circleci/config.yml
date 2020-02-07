@@ -6,4 +6,5 @@ workflows:
   test:
     jobs:
       - cypress/run:
+          yarn: true
           command: npm run test && test:e2e
